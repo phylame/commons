@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 public interface Value<T> {
     T get();
 
-    default <R> Value<R> map(@NonNull Function<? super T, ? extends R> transform) {
+    default <U> Value<U> map(@NonNull Function<? super T, ? extends U> transform) {
         return () -> transform.apply(get());
     }
 

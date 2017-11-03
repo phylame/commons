@@ -1,11 +1,8 @@
-import lombok.val;
-import pw.phylame.commons.value.Value;
+import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDate;
-
+@Slf4j
 public class Test {
     public static void main(String[] args) throws Exception {
-        val now = Value.of(LocalDate::now).map(date -> date.plusDays(5));
-        System.out.println(now.get());
+
     }
 }

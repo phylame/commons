@@ -1,5 +1,6 @@
 package pw.phylame.commons.text;
 
+import lombok.NonNull;
 import lombok.val;
 
 import java.util.Iterator;
@@ -15,7 +16,7 @@ public final class LineSplitter implements Iterator<String> {
     private int begin = 0;
     private int end = 0;
 
-    public LineSplitter(String text) {
+    public LineSplitter(@NonNull String text) {
         this.text = text;
         end = length = text.length();
     }
