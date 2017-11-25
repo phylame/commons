@@ -28,7 +28,7 @@ public interface Hierarchical<T extends Hierarchical<T>> extends Iterable<T> {
     default T locate(@NonNull int[] indices) {
         T child = null;
         for (val index : indices) {
-            child = get(index < 0 ? index + size() : index);
+            child = (child != null ? child : this).get(index < 0 ? index + size() : index);
         }
         return child;
     }
