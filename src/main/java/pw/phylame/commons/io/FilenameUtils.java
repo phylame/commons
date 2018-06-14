@@ -3,12 +3,14 @@ package pw.phylame.commons.io;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
+import pw.phylame.commons.text.StringUtils;
 import pw.phylame.commons.value.Pair;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.NumberFormat;
 
 /**
  * @author wp <phylame@163.com>
@@ -24,6 +26,20 @@ public final class FilenameUtils {
 
     public static String slashified(@NonNull String path) {
         return path.replace('\\', '/');
+    }
+
+    public static String printableSize(long size) {
+        val format = NumberFormat.getInstance();
+        format.setMaximumFractionDigits(2);
+        if (size > 0x4000_0000) {
+            return format.format((double) size / 0x4000_0000) + " GB";
+        } else if (size > 0x10_0000) {
+            return format.format((double) size / 0x10_0000) + " MB";
+        } else if (size > 0x400) {
+            return format.format((double) size / 0x400) + " KB";
+        } else {
+            return size + " B";
+        }
     }
 
     public static Pair<Integer, Integer> splitPath(@NonNull String path) {
@@ -67,5 +83,16 @@ public final class FilenameUtils {
     @SneakyThrows(IOException.class)
     public static String mimeType(String path) {
         return Files.probeContentType(Paths.get(path));
+    }
+
+    public static String detectMime(String mime, String path) {
+        if (StringUtils.isNotEmpty(mime)) {
+            return mime;
+        }
+        val mimeType = FilenameUtils.mimeType(path);
+        if (mimeType != null) {
+            return mimeType;
+        }
+        return null;
     }
 }

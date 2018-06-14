@@ -6,6 +6,7 @@ import lombok.val;
 import pw.phylame.commons.DateUtils;
 import pw.phylame.commons.value.Lazy;
 
+import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -86,6 +87,7 @@ public final class FormatterService {
         register(Boolean.class, new DefaultFormatter<>(Boolean.class));
 
         register(Locale.class, new DefaultFormatter<>(Locale.class));
+        register(Charset.class, new DefaultFormatter<>(Charset.class));
 
         register(Date.class, new DefaultFormatter<>(Date.class));
         register(LocalTime.class, new DefaultFormatter<>(LocalTime.class));
@@ -106,6 +108,8 @@ public final class FormatterService {
                 return ((Enum) obj).name();
             } else if (type == Locale.class) {
                 return ((Locale) obj).toLanguageTag();
+            } else if (type == Charset.class) {
+                return ((Charset) obj).name();
             }
             return obj.toString();
         }
@@ -129,6 +133,8 @@ public final class FormatterService {
                 return (T) Double.valueOf(str);
             } else if (type == Locale.class) {
                 return (T) Locale.forLanguageTag(str);
+            } else if (type == Charset.class) {
+                return (T) Charset.forName(str);
             } else if (type == LocalTime.class) {
                 return (T) LocalTime.parse(str);
             } else if (type == LocalDate.class) {

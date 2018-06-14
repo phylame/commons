@@ -1,24 +1,20 @@
 package pw.phylame.commons.io;
 
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.commons.Reflections;
 import pw.phylame.commons.Validate;
-import pw.phylame.commons.value.Lazy;
+import pw.phylame.commons.vdm.VdmEntry;
+import pw.phylame.commons.vdm.VdmReader;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static pw.phylame.commons.Validate.nonEmpty;
-import static pw.phylame.commons.Validate.nonNull;
 
 /**
  * @author wp <phylame@163.com>
@@ -133,64 +129,11 @@ public final class Resources {
         return new UrlResource(url, name, mime);
     }
 
-    private static class UrlResource implements Resource {
-        private final URL url;
+    public static Resource of(VdmReader reader, VdmEntry entry) {
+        return new VdmResource(reader, entry, null);
+    }
 
-        @Getter
-        private final String name;
-
-        private volatile String contentType;
-
-        private final Lazy<Long> contentLength = Lazy.of(() -> {
-            try {
-                return openConnection().getContentLengthLong();
-            } catch (IOException e) {
-                return -1L;
-            }
-        });
-
-        UrlResource(URL url, String name, String contentType) {
-            this.url = Validate.nonNull(url);
-            this.name = Validate.nonEmpty(name);
-            this.contentType = contentType;
-        }
-
-        @Override
-        public String getContentType() {
-            if (contentType == null) {
-                synchronized (this) {
-                    if (contentType == null) {
-                        try {
-                            contentType = openConnection().getContentType();
-                        } catch (IOException e) {
-                            contentType = FilenameUtils.UNKNOWN_MIME_TYPE;
-                        }
-                    }
-                }
-            }
-            return contentType;
-        }
-
-        @Override
-        public long size() {
-            return contentLength.get();
-        }
-
-        @Override
-        public InputStream openStream() throws IOException {
-            return openConnection().getInputStream();
-        }
-
-        @Override
-        public String toString() {
-            return url + ";mime=" + getContentType();
-        }
-
-        private URLConnection openConnection() throws IOException {
-            val conn = url.openConnection();
-            conn.setUseCaches(false);
-            conn.connect();
-            return conn;
-        }
+    public static Resource of(VdmReader reader, VdmEntry entry, String mime) {
+        return new VdmResource(reader, entry, mime);
     }
 }

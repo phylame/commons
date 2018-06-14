@@ -16,7 +16,7 @@ import java.util.LinkedList;
  * @date 2018/06/14
  */
 @RequiredArgsConstructor
-public class FileVdmWriter implements VdmWriter {
+class FileVdmWriter implements VdmWriter {
     private final Path root;
 
     private final LinkedList<OutputStream> streams = new LinkedList<>();

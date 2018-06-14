@@ -17,7 +17,7 @@ public interface VdmReader extends Iterable<VdmEntry>, Closeable {
 
     String getComment();
 
-    VdmEntry getEntry(String name) throws IOException;
+    VdmEntry getEntry(String name);
 
     InputStream openStream(VdmEntry entry) throws IOException;
 

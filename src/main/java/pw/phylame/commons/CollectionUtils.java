@@ -1,5 +1,7 @@
 package pw.phylame.commons;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.util.*;
@@ -36,11 +38,34 @@ public final class CollectionUtils {
         }
     }
 
+    public static <E> Iterable<E> iterable(@NonNull Iterator<E> i) {
+        return () -> i;
+    }
+
+    public static <E> Iterator<E> iterator(@NonNull Enumeration<E> e) {
+        return new EnumerationIterator<>(e);
+    }
+
     public static void copy(Properties props, Map<? super String, ? super String> map) {
         if (!props.isEmpty()) {
             for (val entry : props.entrySet()) {
                 map.put((String) entry.getKey(), (String) entry.getValue());
             }
+        }
+    }
+
+    @RequiredArgsConstructor
+    private static class EnumerationIterator<E> implements Iterator<E> {
+        private final Enumeration<E> e;
+
+        @Override
+        public boolean hasNext() {
+            return e.hasMoreElements();
+        }
+
+        @Override
+        public E next() {
+            return e.nextElement();
         }
     }
 }

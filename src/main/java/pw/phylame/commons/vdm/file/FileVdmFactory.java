@@ -16,7 +16,7 @@ import java.util.Set;
  * @author wp <phylame@163.com>
  * @date 2018/06/14
  */
-public class FileVdmFactory implements VdmFactory {
+public final class FileVdmFactory implements VdmFactory {
     @Override
     public VdmReader getReader(@NonNull Object input, Settings settings) throws IOException {
         return new FileVdmReader(getPath(input, true));
@@ -36,7 +36,7 @@ public class FileVdmFactory implements VdmFactory {
         } else if (obj instanceof File) {
             path = ((File) obj).toPath();
         } else {
-            throw new IllegalArgumentException("Not a path: " + obj);
+            throw new IllegalArgumentException(obj.toString());
         }
         if (readMode) {
             if (Files.notExists(path)) {

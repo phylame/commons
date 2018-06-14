@@ -6,6 +6,7 @@ import lombok.val;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 
 /**
  * Utilities for byte and char stream.
@@ -70,6 +71,15 @@ public final class IOUtils {
         }
 
         return copied;
+    }
+
+    public static void write(@NonNull Appendable output, @NonNull Iterator<? extends CharSequence> it, String separator) throws IOException {
+        while (it.hasNext()) {
+            output.append(it.next());
+            if (it.hasNext()) {
+                output.append(separator);
+            }
+        }
     }
 
     public static String toString(InputStream input) throws IOException {

@@ -1,6 +1,7 @@
 package pw.phylame.commons.vdm.file;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import pw.phylame.commons.vdm.VdmEntry;
 
 import java.io.IOException;
@@ -23,6 +24,12 @@ class FileVdmEntry implements VdmEntry {
     final FileVdmWriter writer;
 
     OutputStream stream;
+
+    @Override
+    @SneakyThrows(IOException.class)
+    public long length() {
+        return Files.isRegularFile(path) ? Files.size(path) : -1L;
+    }
 
     @Override
     public String getName() {

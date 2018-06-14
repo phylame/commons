@@ -5,6 +5,8 @@ package pw.phylame.commons.vdm;
  * @date 2018/06/2018
  */
 public interface VdmEntry {
+    long length();
+
     String getName();
 
     String getComment();

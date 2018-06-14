@@ -1,6 +1,5 @@
 package pw.phylame.commons.vdm.file;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import pw.phylame.commons.NestedException;
@@ -24,8 +23,7 @@ import static pw.phylame.commons.Validate.nonEmpty;
  * @date 2018/06/14
  */
 @RequiredArgsConstructor
-public class FileVdmReader extends DisposableSupport implements VdmReader {
-    @NonNull
+class FileVdmReader extends DisposableSupport implements VdmReader {
     private final Path root;
 
     private final LinkedList<InputStream> streams = new LinkedList<>();

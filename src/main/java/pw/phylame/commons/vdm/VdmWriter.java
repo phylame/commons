@@ -15,9 +15,5 @@ public interface VdmWriter extends Closeable {
 
     OutputStream putEntry(VdmEntry entry) throws IOException;
 
-    default OutputStream putEntry(String name) throws IOException {
-        return putEntry(newEntry(name));
-    }
-
     void closeEntry(VdmEntry entry) throws IOException;
 }

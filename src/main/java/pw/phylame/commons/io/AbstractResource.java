@@ -3,7 +3,6 @@ package pw.phylame.commons.io;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import pw.phylame.commons.text.StringUtils;
 
 /**
  * @author wp <phylame@163.com>
@@ -22,13 +21,7 @@ public abstract class AbstractResource implements Resource {
     }
 
     private String detectContentType() {
-        if (StringUtils.isNotEmpty(mime)) {
-            return mime;
-        }
-        val mimeType = FilenameUtils.mimeType(getName());
-        if (mimeType != null) {
-            return mimeType;
-        }
-        return FilenameUtils.UNKNOWN_MIME_TYPE;
+        val mimeType = FilenameUtils.detectMime(mime, getName());
+        return mimeType != null ? mimeType : FilenameUtils.UNKNOWN_MIME_TYPE;
     }
 }
