@@ -4,34 +4,85 @@ import lombok.NonNull;
 import lombok.val;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
+/**
+ * Utilities for byte and char stream.
+ *
+ * @author wp <phylame@163.com>
+ * @date 2018/06/08
+ */
 public final class IOUtils {
-    private IOUtils() {
+    private static final int EOF = -1;
+
+    public static final int DEFAULT_BUFFER_SIZE = 8192;
+
+    public static long copy(InputStream input, OutputStream output, long size) throws IOException {
+        return copy(input, output, size, DEFAULT_BUFFER_SIZE);
     }
 
-    public static final int BUFFER_SIZE = 8192;
+    public static long copy(InputStream input, OutputStream output, long size, int bufferSize) throws IOException {
+        return copy(ByteSource.of(input), ByteSink.of(output), size, bufferSize);
+    }
 
-    public static final String UNKNOWN_MIME = "application/octet-stream";
+    public static long copy(ByteSource input, ByteSink output, long size) throws IOException {
+        return copy(input, output, size, DEFAULT_BUFFER_SIZE);
+    }
 
-    public static void copy(@NonNull InputStream in, @NonNull OutputStream out) throws IOException {
-        int bytes;
-        val buffer = new byte[BUFFER_SIZE];
-        while ((bytes = in.read(buffer)) != -1) {
-            out.write(buffer, 0, bytes);
+    public static long copy(@NonNull ByteSource input, @NonNull ByteSink output, long size, int bufferSize) throws IOException {
+        val buf = new byte[bufferSize];
+
+        int n;
+        long copied = 0L;
+        while ((n = input.read(buf, 0, bufferSize)) != EOF) {
+            copied += n;
+            if (size < 0 || copied < size) {
+                output.write(buf, 0, n);
+            } else {
+                output.write(buf, 0, n - (int) (copied - size));
+                copied = size;
+                break;
+            }
         }
+
+        return copied;
     }
 
-    public static void copy(@NonNull Reader in, @NonNull Writer out) throws IOException {
-        int chars;
-        val buffer = new char[BUFFER_SIZE];
-        while ((chars = in.read(buffer)) != -1) {
-            out.write(buffer, 0, chars);
+    public static long copy(@NonNull Reader input, @NonNull Writer output, long size) throws IOException {
+        return copy(input, output, size, DEFAULT_BUFFER_SIZE);
+    }
+
+    public static long copy(@NonNull Reader input, @NonNull Writer output, long size, int bufferSize) throws IOException {
+        val buf = new char[bufferSize];
+
+        int n;
+        long copied = 0L;
+        while ((n = input.read(buf)) != EOF) {
+            copied += n;
+            if (size < 0 || copied < size) {
+                output.write(buf, 0, n);
+            } else {
+                output.write(buf, 0, n - (int) (copied - size));
+                copied = size;
+                break;
+            }
         }
+
+        return copied;
     }
 
-    public static String toString(@NonNull Reader reader) throws IOException {
-        val writer = new CharArrayWriter(BUFFER_SIZE << 2);
-        copy(reader, writer);
-        return writer.toString();
+    public static String toString(InputStream input) throws IOException {
+        return toString(new InputStreamReader(input, StandardCharsets.UTF_8));
+    }
+
+    public static String toString(InputStream input, Charset charset) throws IOException {
+        return toString(new InputStreamReader(input, charset));
+    }
+
+    public static String toString(Reader reader) throws IOException {
+        val out = new CharArrayWriter();
+        copy(reader, out, -1);
+        return out.toString();
     }
 }

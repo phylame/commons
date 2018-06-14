@@ -6,9 +6,21 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.function.Supplier;
 
-@RequiredArgsConstructor
+import static lombok.AccessLevel.PRIVATE;
+
+/**
+ * Synchronized lazy value.
+ *
+ * @param <T> type of value
+ * @author wp <phylame@163.com>
+ * @date 2018/06/08
+ */
+@RequiredArgsConstructor(access = PRIVATE)
 public final class Lazy<T> implements Value<T> {
-    @NonNull
+    public static <T> Lazy<T> of(@NonNull Supplier<? extends T> supplier) {
+        return new Lazy<>(supplier);
+    }
+
     private final Supplier<? extends T> supplier;
 
     @Getter

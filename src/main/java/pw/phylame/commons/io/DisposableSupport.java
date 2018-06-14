@@ -1,29 +1,43 @@
 package pw.phylame.commons.io;
 
-import lombok.Synchronized;
+import pw.phylame.commons.NestedException;
 
-public abstract class DisposableSupport implements AutoDisposable {
-    private volatile int refCount = 1;
+import java.util.concurrent.atomic.AtomicInteger;
+
+/**
+ * @author wp <phylame@163.com>
+ * @date 2018/06/08
+ */
+public abstract class DisposableSupport implements Disposable {
+    private final AtomicInteger counter = new AtomicInteger(1);
+
+    private final Object lock = new Object();
 
     @Override
-    @Synchronized
-    public void retain() {
-        if (refCount == 0) {
+    public final void retain() throws DisposedException {
+        if (counter.get() == 0) {
             throw new DisposedException();
         }
-        ++refCount;
+        synchronized (lock) {
+            if (counter.get() == 0) {
+                throw new DisposedException();
+            }
+            counter.incrementAndGet();
+        }
     }
 
     @Override
-    @Synchronized
-    public void release() {
-        if (refCount == 0) {
-            throw new DisposedException();
-        }
-        if (--refCount == 0) {
-            dispose();
+    public final void release() throws NestedException {
+        if (counter.get() > 0) {
+            synchronized (lock) {
+                if (counter.get() > 0 && counter.decrementAndGet() == 0) {
+                    try {
+                        close();
+                    } catch (Exception e) {
+                        throw new NestedException(e);
+                    }
+                }
+            }
         }
     }
-
-    protected abstract void dispose();
 }

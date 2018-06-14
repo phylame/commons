@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * @author wp <phylame@163.com>
+ * @date 2018/05/18
+ */
 @RequiredArgsConstructor
 public final class LineIterator implements Iterator<String> {
     @NonNull

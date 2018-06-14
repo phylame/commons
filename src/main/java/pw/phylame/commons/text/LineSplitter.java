@@ -6,6 +6,10 @@ import lombok.val;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * @author wp <phylame@163.com>
+ * @date 2018/05/18
+ */
 public final class LineSplitter implements Iterator<String> {
     private final String text;
     private final int length;

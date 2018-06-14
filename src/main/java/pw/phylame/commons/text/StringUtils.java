@@ -1,20 +1,15 @@
 package pw.phylame.commons.text;
 
-import java.util.Objects;
-
+/**
+ * @author wp <phylame@163.com>
+ * @date 2018/06/08
+ */
 public final class StringUtils {
-    private StringUtils() {
-    }
-
     public static boolean isEmpty(CharSequence cs) {
         return cs == null || cs.length() == 0;
     }
 
     public static boolean isNotEmpty(CharSequence cs) {
         return cs != null && cs.length() != 0;
-    }
-
-    public static String coalesce(CharSequence cs, CharSequence fallback) {
-        return isNotEmpty(cs) ? cs.toString() : Objects.toString(fallback, null);
     }
 }
