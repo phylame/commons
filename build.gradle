@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'maven-publish'
 }
 
 version = '5.0.SNAPSHOT'
@@ -14,4 +15,20 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:+'
     implementation 'org.slf4j:slf4j-api:1.7+'
     testImplementation 'junit:junit:4.12'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
 }

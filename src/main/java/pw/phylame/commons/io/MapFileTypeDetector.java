@@ -22,7 +22,7 @@ public class MapFileTypeDetector extends FileTypeDetector {
     private final HashMap<String, String> mimeMap = new HashMap<>();
 
     public MapFileTypeDetector() {
-        val path = getClass().getPackage().getName() + "/" + MIME_TYPE_FILE_NAME;
+        val path = getClass().getPackage().getName().replace('.', '/') + "/" + MIME_TYPE_FILE_NAME;
         try {
             val urls = getClass().getClassLoader().getResources(path);
             while (urls.hasMoreElements()) {
