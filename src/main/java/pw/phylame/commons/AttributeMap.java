@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 import static pw.phylame.commons.Validate.nonEmpty;
 import static pw.phylame.commons.text.StringUtils.isNotEmpty;
@@ -21,7 +21,7 @@ import static pw.phylame.commons.text.StringUtils.isNotEmpty;
  */
 @RequiredArgsConstructor
 public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, Cloneable {
-    private final BiConsumer<String, Object> validator;
+    private final BiFunction<String, Object, Object> validator;
 
     private HashMap<String, Object> values = new HashMap<>();
 
@@ -32,7 +32,7 @@ public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, 
     public Object set(String name, @NonNull Object value) {
         nonEmpty(name, "`name` cannot be empty");
         if (validator != null) {
-            validator.accept(name, value);
+            value = validator.apply(name, value);
         }
         val last = values.get(name);
         values.put(name, value);
