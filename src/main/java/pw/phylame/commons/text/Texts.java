@@ -58,8 +58,7 @@ public final class Texts {
         private final String type;
 
         ResourceText(Resource resource, Charset charset, String type) {
-            Disposables.retain(resource);
-            this.resource = resource;
+            this.resource = Disposables.retain(resource);
             this.charset = charset;
             this.type = type;
         }

@@ -7,7 +7,7 @@ import lombok.val;
  * @date 2018/06/08
  */
 public final class Disposables {
-    public static void retain(Object obj) {
+    public static <T> T retain(T obj) {
         if (obj != null) {
             if (obj instanceof Disposable) {
                 ((Disposable) obj).retain();
@@ -17,9 +17,10 @@ public final class Disposables {
                 }
             }
         }
+        return obj;
     }
 
-    public static void release(Object obj) {
+    public static <T> T release(T obj) {
         if (obj != null) {
             if (obj instanceof Disposable) {
                 ((Disposable) obj).release();
@@ -29,5 +30,6 @@ public final class Disposables {
                 }
             }
         }
+        return obj;
     }
 }

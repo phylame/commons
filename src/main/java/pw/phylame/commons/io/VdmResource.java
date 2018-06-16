@@ -21,9 +21,8 @@ class VdmResource extends DisposableSupport implements Resource {
     private final String contentType;
 
     VdmResource(@NonNull VdmReader reader, @NonNull VdmEntry entry, String mime) {
-        this.reader = reader;
         this.entry = entry;
-        Disposables.retain(reader);
+        this.reader = Disposables.retain(reader);
         contentType = FilenameUtils.detectMime(mime, entry.getName());
     }
 
