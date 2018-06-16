@@ -35,9 +35,8 @@ public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, 
             value = validator.apply(name, value);
         }
         val last = values.get(name);
-        values.put(name, value);
+        values.put(name, Disposables.retain(value));
         Disposables.release(last);
-        Disposables.retain(value);
         return last;
     }
 
