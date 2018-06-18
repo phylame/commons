@@ -2,14 +2,12 @@ package pw.phylame.commons;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.val;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import static lombok.AccessLevel.PROTECTED;
 import static pw.phylame.commons.Validate.require;
 
 /**
@@ -18,10 +16,9 @@ import static pw.phylame.commons.Validate.require;
  */
 public abstract class HierarchySupport<T extends HierarchySupport<T>> implements Hierarchical<T> {
     @Getter
-    @Setter(PROTECTED)
-    private T parent;
+    protected T parent;
 
-    private ArrayList<T> children = new ArrayList<>();
+    protected ArrayList<T> children = new ArrayList<>();
 
     public final void append(@NonNull T item) {
         children.add(ensureSolitary(item));
@@ -66,7 +63,7 @@ public abstract class HierarchySupport<T extends HierarchySupport<T>> implements
 
     public final T replaceAt(int index, T item) {
         val last = children.set(index, ensureSolitary(item));
-        last.setParent(null);
+        last.parent = null;
         return last;
     }
 
@@ -81,7 +78,7 @@ public abstract class HierarchySupport<T extends HierarchySupport<T>> implements
 
     public final T removeAt(int index) {
         val last = children.remove(index);
-        last.setParent(null);
+        last.parent = null;
         return last;
     }
 
@@ -91,7 +88,7 @@ public abstract class HierarchySupport<T extends HierarchySupport<T>> implements
 
     public final void clear() {
         for (T child : children) {
-            child.setParent(null);
+            child.parent = null;
         }
         children.clear();
     }
@@ -107,7 +104,7 @@ public abstract class HierarchySupport<T extends HierarchySupport<T>> implements
         require(item != getParent(), "Cannot add parent to child list");
         require(item.getParent() == null, "Item has been in certain hierarchy");
         require(!item.isOffspring((T) this), "Cannot add ancestor to child list");
-        item.setParent((T) this);
+        item.parent = (T) this;
         return item;
     }
 }

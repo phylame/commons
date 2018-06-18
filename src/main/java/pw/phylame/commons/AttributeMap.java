@@ -82,7 +82,7 @@ public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, 
 
     @Override
     public String toString() {
-        return getClass().getName() + "@" + Integer.toHexString(hashCode()) + values;
+        return values.toString();
     }
 
     @Override
