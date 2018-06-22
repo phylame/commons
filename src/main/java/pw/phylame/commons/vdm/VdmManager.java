@@ -13,10 +13,10 @@ import java.io.IOException;
  * @date 2018/06/2018
  */
 public final class VdmManager extends ServiceManager<VdmFactory> {
-    private static final Lazy<VdmManager> DEFAULT_INSTANCE = Lazy.of(VdmManager::new);
+    private static final Lazy<VdmManager> INSTANCE = Lazy.of(VdmManager::new);
 
     public static VdmManager getDefault() {
-        return DEFAULT_INSTANCE.get();
+        return INSTANCE.get();
     }
 
     public VdmManager() {

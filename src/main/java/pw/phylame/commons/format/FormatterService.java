@@ -20,14 +20,14 @@ import java.util.Locale;
  * @date 2018/06/2018
  */
 public final class FormatterService {
-    private static final Lazy<FormatterService> DEFAULT_INSTANCE = Lazy.of(() -> {
+    private static final Lazy<FormatterService> INSTANCE = Lazy.of(() -> {
         val fs = new FormatterService();
         fs.registerDefaults();
         return fs;
     });
 
     public static FormatterService getDefault() {
-        return DEFAULT_INSTANCE.get();
+        return INSTANCE.get();
     }
 
     private final IdentityHashMap<Class<?>, Formatter<?>> formatters = new IdentityHashMap<>();

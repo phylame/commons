@@ -39,7 +39,7 @@ public interface Value<T> {
 
     @SuppressWarnings("unchecked")
     static <T> T get(@NonNull Object obj) {
-        return obj instanceof Value<?> ? ((Value<T>) obj).get() : null;
+        return obj instanceof Value<?> ? ((Value<T>) obj).get() : (T) obj;
     }
 
     static <T> T get(Value<T> value) {
