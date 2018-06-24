@@ -47,4 +47,8 @@ public final class SettingsUtils {
         }
         throw new IllegalArgumentException("`" + key + "` is not String");
     }
+
+    public static Object set(Settings settings, String key, Object value) {
+        return settings != null ? settings.set(key, value) : null;
+    }
 }

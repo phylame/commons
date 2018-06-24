@@ -3,6 +3,7 @@ package pw.phylame.commons.vdm.file;
 import lombok.NonNull;
 import pw.phylame.commons.setting.Settings;
 import pw.phylame.commons.vdm.VdmFactory;
+import pw.phylame.commons.vdm.VdmManager;
 import pw.phylame.commons.vdm.VdmReader;
 import pw.phylame.commons.vdm.VdmWriter;
 
@@ -50,6 +51,6 @@ public final class FileVdmFactory implements VdmFactory {
 
     @Override
     public Set<String> getKeys() {
-        return Collections.singleton("dir");
+        return Collections.singleton(VdmManager.VDM_TYPE_DIRECTORY);
     }
 }

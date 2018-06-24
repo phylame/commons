@@ -55,11 +55,11 @@ public abstract class AsyncValue<T> implements Value<T> {
         }
     }
 
-    public final void schedule(@NonNull ExecutorService executor) {
+    public final void schedule(@NonNull ExecutorService service) {
         if (future != null) {
             throw new IllegalStateException("Already submitted");
         }
-        future = executor.submit(action);
+        future = service.submit(action);
     }
 
     public final void reset() {

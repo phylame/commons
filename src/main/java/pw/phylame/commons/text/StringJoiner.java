@@ -18,6 +18,7 @@ public final class StringJoiner<E> {
     @NonNull
     private Iterator<E> iterator;
 
+    @NonNull
     @Builder.Default
     private CharSequence separator = ",";
 

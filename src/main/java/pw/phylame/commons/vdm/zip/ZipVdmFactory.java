@@ -6,6 +6,7 @@ import lombok.var;
 import pw.phylame.commons.setting.Settings;
 import pw.phylame.commons.setting.SettingsUtils;
 import pw.phylame.commons.vdm.VdmFactory;
+import pw.phylame.commons.vdm.VdmManager;
 import pw.phylame.commons.vdm.VdmReader;
 import pw.phylame.commons.vdm.VdmWriter;
 
@@ -82,6 +83,6 @@ public final class ZipVdmFactory implements VdmFactory {
 
     @Override
     public Set<String> getKeys() {
-        return Collections.singleton("zip");
+        return Collections.singleton(VdmManager.VDM_TYPE_ZIP);
     }
 }

@@ -2,11 +2,14 @@ package pw.phylame.commons.io;
 
 import lombok.NonNull;
 import lombok.val;
+import pw.phylame.commons.NestedException;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Utilities for byte and char stream.
@@ -18,6 +21,16 @@ public final class IOUtils {
     private static final int EOF = -1;
 
     public static final int DEFAULT_BUFFER_SIZE = 8192;
+
+    public static void closeQuietly(AutoCloseable c) {
+        if (c != null) {
+            try {
+                c.close();
+            } catch (Exception e) {
+                throw new NestedException(e);
+            }
+        }
+    }
 
     public static long copy(InputStream input, OutputStream output, long size) throws IOException {
         return copy(input, output, size, DEFAULT_BUFFER_SIZE);
@@ -94,5 +107,20 @@ public final class IOUtils {
         val out = new CharArrayWriter();
         copy(reader, out, -1);
         return out.toString();
+    }
+
+    public static List<String> toLines(InputStream input) {
+        return toLines(input, StandardCharsets.UTF_8);
+    }
+
+    public static List<String> toLines(InputStream input, Charset charset) {
+        return toLines(new InputStreamReader(input, charset));
+    }
+
+    public static List<String> toLines(Reader reader) {
+        val stream = !(reader instanceof BufferedReader)
+                ? new BufferedReader(reader).lines()
+                : ((BufferedReader) reader).lines();
+        return stream.collect(Collectors.toList());
     }
 }

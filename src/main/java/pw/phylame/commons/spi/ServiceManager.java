@@ -5,6 +5,8 @@ import lombok.val;
 import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pw.phylame.commons.CollectionUtils;
+import pw.phylame.commons.NotImplementedException;
 import pw.phylame.commons.Reflections;
 
 import java.util.HashMap;
@@ -43,7 +45,13 @@ public class ServiceManager<T extends KeyedService> {
             reload();
         }
         return services.stream()
-                .filter(s -> s.getKeys().contains(key))
+                .filter(s -> {
+                    val keys = s.getKeys();
+                    if (CollectionUtils.isEmpty(keys)) {
+                        throw new NotImplementedException(s.getClass().getName() + ".getKeys() returned null or empty set");
+                    }
+                    return keys.contains(key);
+                })
                 .findFirst()
                 .orElse(null);
     }

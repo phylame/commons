@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author wp <phylame@163.com>
@@ -38,6 +39,12 @@ public final class CollectionUtils {
         }
     }
 
+    public static <E> Optional<E> anyOf(List<E> list) {
+        return isNotEmpty(list)
+                ? Optional.ofNullable(list.get(ThreadLocalRandom.current().nextInt(list.size())))
+                : Optional.empty();
+    }
+
     public static <E> Iterable<E> iterable(@NonNull Iterator<E> i) {
         return () -> i;
     }
@@ -52,6 +59,32 @@ public final class CollectionUtils {
                 map.put((String) entry.getKey(), (String) entry.getValue());
             }
         }
+    }
+
+    public static <E> Set<E> setOf(E a) {
+        return Collections.singleton(a);
+    }
+
+    public static <E> Set<E> setOf(E a, E b) {
+        val set = new HashSet<E>();
+        set.add(a);
+        set.add(b);
+        return Collections.unmodifiableSet(set);
+    }
+
+    public static <E> Set<E> setOf(E a, E b, E c) {
+        val set = new HashSet<E>();
+        set.add(a);
+        set.add(b);
+        set.add(c);
+        return Collections.unmodifiableSet(set);
+    }
+
+    @SafeVarargs
+    public static <E> Set<E> setOf(E... a) {
+        val set = new HashSet<E>();
+        Collections.addAll(set, a);
+        return Collections.unmodifiableSet(set);
     }
 
     @RequiredArgsConstructor
