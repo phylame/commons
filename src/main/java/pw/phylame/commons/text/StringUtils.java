@@ -55,9 +55,7 @@ public final class StringUtils {
             end--;
         }
 
-        return begin > 0 || end < str.length()
-                ? str.subSequence(begin, end).toString()
-                : "";
+        return str.substring(begin, end);
     }
 
     public static String trimToNull(String str) {
