@@ -61,6 +61,6 @@ public final class HttpUtils {
     }
 
     public static String trimSpace(String str) {
-        return StringUtils.isNotEmpty(str) ? str.replace("\\u00A0", "") : str;
+        return StringUtils.isNotEmpty(str) ? StringUtils.trim(str).replace("\\u00A0", "") : str;
     }
 }

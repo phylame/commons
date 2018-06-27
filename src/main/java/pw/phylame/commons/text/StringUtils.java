@@ -13,6 +13,8 @@ import java.util.*;
  * @date 2018/06/08
  */
 public final class StringUtils {
+    public static final char FULL_WIDTH_SPACE = '\u3000';
+
     public static boolean isEmpty(CharSequence cs) {
         return cs == null || cs.length() == 0;
     }
@@ -21,8 +23,41 @@ public final class StringUtils {
         return cs != null && cs.length() != 0;
     }
 
+    public static boolean isBlank(CharSequence cs) {
+        return !isNotBlank(cs);
+    }
+
+    public static boolean isNotBlank(CharSequence cs) {
+        if (isEmpty(cs)) {
+            return false;
+        }
+        char ch;
+        for (int i = 0, end = cs.length(); i < end; i++) {
+            if ((ch = cs.charAt(i)) != FULL_WIDTH_SPACE && !Character.isWhitespace(ch)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static String trim(String str) {
-        return str != null ? str.trim() : null;
+        if (isEmpty(str)) {
+            return str;
+        }
+
+        char ch;
+        int end = str.length();
+        int begin = 0;
+        while (begin < end && (((ch = str.charAt(begin)) <= ' ') || (ch == FULL_WIDTH_SPACE))) {
+            begin++;
+        }
+        while (begin < end && (((ch = str.charAt(end - 1)) <= ' ') || (ch == FULL_WIDTH_SPACE))) {
+            end--;
+        }
+
+        return begin > 0 || end < str.length()
+                ? str.subSequence(begin, end).toString()
+                : "";
     }
 
     public static String trimToNull(String str) {
@@ -39,9 +74,10 @@ public final class StringUtils {
         if (isEmpty(str)) {
             return str;
         }
+        char ch;
         int begin = 0;
         val length = str.length();
-        while (begin < length && Character.isWhitespace(str.charAt(begin))) {
+        while (begin < length && ((ch = str.charAt(begin)) == FULL_WIDTH_SPACE || Character.isWhitespace(ch))) {
             ++begin;
         }
         return str.substring(begin);
@@ -51,9 +87,10 @@ public final class StringUtils {
         if (isEmpty(str)) {
             return str;
         }
+        char ch;
         val length = str.length();
         int end = length - 1;
-        while (end >= 0 && Character.isWhitespace(str.charAt(end))) {
+        while (end >= 0 && ((ch = str.charAt(end)) == FULL_WIDTH_SPACE || Character.isWhitespace(ch))) {
             --end;
         }
         return str.substring(0, end);
