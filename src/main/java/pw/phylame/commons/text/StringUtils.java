@@ -2,6 +2,7 @@ package pw.phylame.commons.text;
 
 import lombok.NonNull;
 import lombok.val;
+import lombok.var;
 
 import java.util.*;
 
@@ -78,6 +79,35 @@ public final class StringUtils {
         }
     }
 
+    public static String replace(String str, String target, String replacement, int limit) {
+        if (isEmpty(str) || isEmpty(target) || limit <= 0) {
+            return str;
+        }
+        var begin = 0;
+        val length = target.length();
+        val b = new StringBuilder();
+        for (int i = 0; i < limit; i++) {
+            val index = str.indexOf(target, begin);
+            if (index < 0) {
+                break;
+            }
+            b.append(str, begin, index).append(replacement);
+            begin = index + length;
+        }
+        b.append(str.substring(begin));
+        return b.toString();
+    }
+
+    public static String replaceLast(String str, String target, String replacement) {
+        if (isEmpty(str) || isEmpty(target)) {
+            return str;
+        }
+        val index = str.lastIndexOf(target);
+        return index != -1
+                ? str.substring(0, index) + replacement + str.substring(index + target.length())
+                : str;
+    }
+
     public static List<String> split(String str, String separator, int limit) {
         if (limit <= 0) {
             return Arrays.asList(str.split(separator));
@@ -148,9 +178,5 @@ public final class StringUtils {
             }
         }
         return null;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getValue("name=wp&age&sex=female", "age", "&"));
     }
 }
