@@ -48,10 +48,10 @@ public final class StringUtils {
         char ch;
         int end = str.length();
         int begin = 0;
-        while (begin < end && (((ch = str.charAt(begin)) <= ' ') || (ch == FULL_WIDTH_SPACE))) {
+        while (begin < end && ((ch = str.charAt(begin)) == FULL_WIDTH_SPACE || Character.isWhitespace(ch))) {
             begin++;
         }
-        while (begin < end && (((ch = str.charAt(end - 1)) <= ' ') || (ch == FULL_WIDTH_SPACE))) {
+        while (begin < end && ((ch = str.charAt(end - 1)) == FULL_WIDTH_SPACE || Character.isWhitespace(ch))) {
             end--;
         }
 
