@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -70,10 +71,17 @@ public final class WebResponse {
     }
 
     public Reader getReader() throws IOException {
-        val charset = getContentCharset();
-        return charset != null
-                ? new InputStreamReader(getInputStream(), charset)
-                : new InputStreamReader(getInputStream(), StandardCharsets.UTF_8);
+        return getReader(null);
+    }
+
+    public Reader getReader(Charset charset) throws IOException {
+        if (charset == null) {
+            val encoding = getContentCharset();
+            charset = StringUtils.isNotEmpty(encoding)
+                    ? Charset.forName(encoding)
+                    : StandardCharsets.UTF_8;
+        }
+        return new InputStreamReader(getInputStream(), charset);
     }
 
     public Object getContent() throws IOException {
