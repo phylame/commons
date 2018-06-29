@@ -9,26 +9,32 @@ import pw.phylame.commons.NestedException;
  */
 public final class Disposables {
     public static <T> T retain(T obj) throws DisposedException {
-        if (obj != null) {
-            if (obj instanceof Disposable) {
-                ((Disposable) obj).retain();
-            } else if (obj instanceof Iterable<?>) {
-                for (val o : (Iterable<?>) obj) {
-                    retain(o);
-                }
+        if (obj instanceof Disposable) {
+            ((Disposable) obj).retain();
+        }
+        return obj;
+    }
+
+    public static <T> T retainAll(T obj) throws DisposedException {
+        if (obj instanceof Iterable<?>) {
+            for (val e : (Iterable<?>) obj) {
+                retain(e);
             }
         }
         return obj;
     }
 
     public static <T> T release(T obj) throws NestedException {
-        if (obj != null) {
-            if (obj instanceof Disposable) {
-                ((Disposable) obj).release();
-            } else if (obj instanceof Iterable<?>) {
-                for (val o : (Iterable<?>) obj) {
-                    release(o);
-                }
+        if (obj instanceof Disposable) {
+            ((Disposable) obj).release();
+        }
+        return obj;
+    }
+
+    public static <T> T releaseAll(T obj) throws NestedException {
+        if (obj instanceof Iterable<?>) {
+            for (val e : (Iterable<?>) obj) {
+                release(e);
             }
         }
         return obj;

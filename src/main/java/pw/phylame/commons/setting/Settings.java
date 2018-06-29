@@ -10,6 +10,8 @@ import java.util.Map;
  * @date 2018/06/13
  */
 public interface Settings extends Iterable<Pair<String, Object>> {
+    boolean isEnable(String key);
+
     Object set(String key, Object value);
 
     default void update(Map<String, Object> map) {
@@ -24,13 +26,11 @@ public interface Settings extends Iterable<Pair<String, Object>> {
         }
     }
 
-    boolean isEnable(String key);
+    Object get(String key);
 
     default boolean contains(String key) {
         return get(key) != null;
     }
-
-    Object get(String key);
 
     Object remove(String key);
 
