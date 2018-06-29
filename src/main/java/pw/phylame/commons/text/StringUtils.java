@@ -40,6 +40,26 @@ public final class StringUtils {
         return false;
     }
 
+    public static int count(String str, String target) {
+        if (isEmpty(str) || isEmpty(target)) {
+            return 0;
+        }
+
+        var counter = 0;
+        var position = 0;
+        val length = target.length();
+        while (true) {
+            val i = str.indexOf(target, position);
+            if (i < 0) {
+                break;
+            }
+            ++counter;
+            position = i + length;
+        }
+
+        return counter;
+    }
+
     public static String trim(String str) {
         if (isEmpty(str)) {
             return str;
