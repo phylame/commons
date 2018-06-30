@@ -1,4 +1,4 @@
-package pw.phylame.commons;
+package pw.phylame.commons.function;
 
 import java.util.function.Predicate;
 

@@ -1,43 +1,56 @@
 package pw.phylame.commons.vdm;
 
 import lombok.val;
+import pw.phylame.commons.io.IOConsumer;
+import pw.phylame.commons.io.IOFunction;
 import pw.phylame.commons.setting.Settings;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public final class VdmUtils {
-    public static void useStream(VdmWriter writer, String name, Consumer<? super OutputStream> block) throws IOException {
+    public static void useStream(VdmWriter writer, String name, IOConsumer<? super OutputStream> block) throws IOException {
         val entry = writer.newEntry(name);
         val stream = writer.putEntry(entry);
-        block.accept(stream);
-        writer.closeEntry(entry);
+        try {
+            block.accept(stream);
+        } finally {
+            writer.closeEntry(entry);
+        }
     }
 
-    public static <T> T useStream(VdmWriter writer, String name, Function<? super OutputStream, T> block) throws IOException {
+    public static <T> T useStream(VdmWriter writer, String name, IOFunction<? super OutputStream, T> block) throws IOException {
         val entry = writer.newEntry(name);
         val stream = writer.putEntry(entry);
-        val result = block.apply(stream);
-        writer.closeEntry(entry);
+        T result;
+        try {
+            result = block.apply(stream);
+        } finally {
+            writer.closeEntry(entry);
+        }
         return result;
     }
 
     public static void writeData(VdmWriter writer, String name, byte[] data) throws IOException {
         val entry = writer.newEntry(name);
         val stream = writer.putEntry(entry);
-        stream.write(data);
-        writer.closeEntry(entry);
+        try {
+            stream.write(data);
+        } finally {
+            writer.closeEntry(entry);
+        }
     }
 
     public static void writeData(VdmWriter writer, String name, byte[] data, int off, int len) throws IOException {
         val entry = writer.newEntry(name);
         val stream = writer.putEntry(entry);
-        stream.write(data, off, len);
-        writer.closeEntry(entry);
+        try {
+            stream.write(data, off, len);
+        } finally {
+            writer.closeEntry(entry);
+        }
     }
 
     public static VdmReader detectReader(Path path, Settings settings) throws IOException {
