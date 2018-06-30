@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import pw.phylame.commons.DateUtils;
+import pw.phylame.commons.IllegalImplementationException;
 import pw.phylame.commons.value.Lazy;
 
 import java.nio.charset.Charset;
@@ -60,9 +61,14 @@ public final class FormatterService {
             return obj.toString();
         }
         val formatter = (Formatter<T>) formatters.get(type);
-        return formatter != null
-                ? formatter.render(obj)
-                : null;
+        if (formatter != null) {
+            val str = formatter.render(obj);
+            if (str == null) {
+                throw new IllegalImplementationException(formatter.getClass().getName() + ".render(T) returned null");
+            }
+            return str;
+        }
+        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -72,9 +78,14 @@ public final class FormatterService {
             return (T) str;
         }
         val formatter = (Formatter<T>) formatters.get(type);
-        return formatter != null
-                ? formatter.parse(str)
-                : null;
+        if (formatter != null) {
+            val obj = formatter.parse(str);
+            if (obj == null) {
+                throw new IllegalImplementationException(formatter.getClass().getName() + ".parse(String) returned null");
+            }
+            return obj;
+        }
+        return null;
     }
 
     public void registerDefaults() {

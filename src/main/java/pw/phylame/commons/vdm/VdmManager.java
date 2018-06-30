@@ -2,7 +2,7 @@ package pw.phylame.commons.vdm;
 
 import lombok.NonNull;
 import lombok.val;
-import pw.phylame.commons.NotImplementedException;
+import pw.phylame.commons.IllegalImplementationException;
 import pw.phylame.commons.setting.Settings;
 import pw.phylame.commons.spi.ServiceManager;
 import pw.phylame.commons.value.Lazy;
@@ -32,7 +32,7 @@ public final class VdmManager extends ServiceManager<VdmFactory> {
         if (factory != null) {
             val reader = factory.getReader(input, settings);
             if (reader == null) {
-                throw new NotImplementedException(factory.getClass().getName() + ".getReader(Object,Settings) returned null");
+                throw new IllegalImplementationException(factory.getClass().getName() + ".getReader(Object,Settings) returned null");
             }
             return reader;
         }
@@ -44,7 +44,7 @@ public final class VdmManager extends ServiceManager<VdmFactory> {
         if (factory != null) {
             val writer = factory.getWriter(output, settings);
             if (writer == null) {
-                throw new NotImplementedException(factory.getClass().getName() + ".getWriter(Object,Settings) returned null");
+                throw new IllegalImplementationException(factory.getClass().getName() + ".getWriter(Object,Settings) returned null");
             }
             return writer;
         }

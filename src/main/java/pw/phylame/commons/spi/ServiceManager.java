@@ -6,7 +6,7 @@ import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pw.phylame.commons.CollectionUtils;
-import pw.phylame.commons.NotImplementedException;
+import pw.phylame.commons.IllegalImplementationException;
 import pw.phylame.commons.Reflections;
 
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public class ServiceManager<T extends KeyedService> {
                 .filter(s -> {
                     val keys = s.getKeys();
                     if (CollectionUtils.isEmpty(keys)) {
-                        throw new NotImplementedException(s.getClass().getName() + ".getKeys() returned null or empty set");
+                        throw new IllegalImplementationException(s.getClass().getName() + ".getKeys() returned null or empty set");
                     }
                     return keys.contains(key);
                 })
