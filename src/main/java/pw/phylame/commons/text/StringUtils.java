@@ -5,6 +5,7 @@ import lombok.val;
 import lombok.var;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Utilities for string.
@@ -40,6 +41,30 @@ public final class StringUtils {
         return false;
     }
 
+    public static boolean isLowerCase(CharSequence cs) {
+        if (isEmpty(cs)) {
+            return false;
+        }
+        for (int i = 0, end = cs.length(); i != end; ++i) {
+            if (Character.isUpperCase(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isUpperCase(CharSequence cs) {
+        if (isEmpty(cs)) {
+            return false;
+        }
+        for (int i = 0, end = cs.length(); i != end; ++i) {
+            if (Character.isLowerCase(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static int count(String str, String target) {
         if (isEmpty(str) || isEmpty(target)) {
             return 0;
@@ -66,6 +91,14 @@ public final class StringUtils {
             b.append(cs);
         }
         return b.toString();
+    }
+
+    public static String coalesce(String str, String emptyDefault) {
+        return isNotEmpty(str) ? str : emptyDefault;
+    }
+
+    public static String coalesce(String str, Supplier<String> emptySupplier) {
+        return isNotEmpty(str) ? str : emptySupplier.get();
     }
 
     public static String trim(String str) {

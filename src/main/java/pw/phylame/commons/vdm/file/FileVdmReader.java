@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import static pw.phylame.commons.function.Functions.isNotSame;
+import static pw.phylame.commons.Functions.isNotSame;
 import static pw.phylame.commons.Validate.nonEmpty;
 
 /**

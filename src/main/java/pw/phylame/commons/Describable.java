@@ -5,5 +5,7 @@ public interface Describable {
 
     String getVersion();
 
-    String getDescription();
+    default String getDescription() {
+        return "";
+    }
 }

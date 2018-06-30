@@ -3,6 +3,7 @@ package pw.phylame.commons;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import pw.phylame.commons.value.Keyed;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -45,20 +46,26 @@ public final class CollectionUtils {
                 : Optional.empty();
     }
 
-    public static <E> Iterable<E> iterable(@NonNull Iterator<E> i) {
-        return () -> i;
-    }
-
-    public static <E> Iterator<E> iterator(@NonNull Enumeration<E> e) {
-        return new EnumerationIterator<>(e);
-    }
-
     public static void copy(Properties props, Map<? super String, ? super String> map) {
         if (!props.isEmpty()) {
             for (val entry : props.entrySet()) {
                 map.put((String) entry.getKey(), (String) entry.getValue());
             }
         }
+    }
+
+    public static <K, T extends Keyed<K>> void copy(Iterable<T> items, Map<K, T> map) {
+        for (T item : items) {
+            map.put(item.getKey(), item);
+        }
+    }
+
+    public static <E> Iterable<E> iterable(@NonNull Iterator<E> i) {
+        return () -> i;
+    }
+
+    public static <E> Iterator<E> iterator(@NonNull Enumeration<E> e) {
+        return new EnumerationIterator<>(e);
     }
 
     public static <E> Set<E> setOf(E a) {
