@@ -60,6 +60,14 @@ public final class StringUtils {
         return counter;
     }
 
+    public static String repeat(CharSequence cs, int count) {
+        val b = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            b.append(cs);
+        }
+        return b.toString();
+    }
+
     public static String trim(String str) {
         if (isEmpty(str)) {
             return str;
