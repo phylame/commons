@@ -6,11 +6,9 @@ import lombok.SneakyThrows;
 import lombok.val;
 import pw.phylame.commons.io.Disposables;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 import static pw.phylame.commons.Validate.nonEmpty;
 import static pw.phylame.commons.text.StringUtils.isNotEmpty;
@@ -58,6 +56,10 @@ public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, 
         return values.isEmpty();
     }
 
+    public Set<String> names() {
+        return values.keySet();
+    }
+
     public boolean contains(String name) {
         return isNotEmpty(name) && values.containsKey(name);
     }
@@ -88,6 +90,10 @@ public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, 
     @Override
     public Iterator<Map.Entry<String, Object>> iterator() {
         return Collections.unmodifiableMap(values).entrySet().iterator();
+    }
+
+    public Stream<Map.Entry<String, Object>> stream() {
+        return values.entrySet().stream();
     }
 
     @Override
