@@ -75,11 +75,16 @@ public final class TypeMapping {
     }
 
     public void mapType(String name, @NonNull Class<?> type) {
+        mapType(name, type, false);
+    }
+
+    public void mapType(String name, @NonNull Class<?> type, boolean inheritable) {
         Validate.nonEmpty(name, "type name cannot be empty");
 
         val item = acquireItem(name);
-        item.type = type;
         item.reset();
+        item.type = type;
+        item.inheritable = inheritable;
 
         types.put(type, name);
         cache.remove(name);
@@ -104,7 +109,10 @@ public final class TypeMapping {
         }
         return items.entrySet()
                 .stream()
-                .filter(e -> e.getValue().type() == type)
+                .filter(e -> {
+                    val item = e.getValue();
+                    return item.inheritable ? item.type().isAssignableFrom(type) : item.type() == type;
+                })
                 .findFirst()
                 .map(Map.Entry::getKey)
                 .orElse(null);
@@ -137,9 +145,13 @@ public final class TypeMapping {
                     if (StringUtils.isEmpty(path)) {
                         throw new RuntimeException("Class path cannot be empty for " + name);
                     }
+                    val parts = path.split(",");
                     val item = new Item();
                     item.name = name;
-                    item.path = path;
+                    item.path = parts[0];
+                    if (parts.length > 1) {
+                        item.inheritable = Boolean.valueOf(parts[1]);
+                    }
                     items.put(name, item);
                 }
                 initDefaults();
@@ -212,6 +224,8 @@ public final class TypeMapping {
 
         HashSet<String> aliases = new HashSet<>();
 
+        boolean inheritable;
+
         Object initial;
 
         Class<?> type() {
@@ -229,6 +243,7 @@ public final class TypeMapping {
         void reset() {
             path = null;
             aliases.clear();
+            inheritable = false;
             initial = null;
         }
     }
