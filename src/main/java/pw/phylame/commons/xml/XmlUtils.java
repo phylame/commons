@@ -2,6 +2,7 @@ package pw.phylame.commons.xml;
 
 import lombok.SneakyThrows;
 import lombok.val;
+import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -26,5 +27,17 @@ public final class XmlUtils {
         return new XmlRender(serializer)
                 .lineSeparator(newLine)
                 .indentation(indent);
+    }
+
+    public static XmlPullParser newParser() {
+        return newParser(false, false);
+    }
+
+    @SneakyThrows(XmlPullParserException.class)
+    public static XmlPullParser newParser(boolean namespaceAware, boolean validating) {
+        val factory = XmlPullParserFactory.newInstance();
+        factory.setNamespaceAware(namespaceAware);
+        factory.setValidating(validating);
+        return factory.newPullParser();
     }
 }
