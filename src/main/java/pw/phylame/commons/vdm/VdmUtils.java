@@ -6,8 +6,10 @@ import pw.phylame.commons.io.IOFunction;
 import pw.phylame.commons.setting.Settings;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 public final class VdmUtils {
@@ -21,16 +23,14 @@ public final class VdmUtils {
         }
     }
 
-    public static <T> T useStream(VdmWriter writer, String name, IOFunction<? super OutputStream, T> block) throws IOException {
+    public static <R> R useStream(VdmWriter writer, String name, IOFunction<? super OutputStream, R> block) throws IOException {
         val entry = writer.newEntry(name);
         val stream = writer.putEntry(entry);
-        T result;
         try {
-            result = block.apply(stream);
+            return block.apply(stream);
         } finally {
             writer.closeEntry(entry);
         }
-        return result;
     }
 
     public static void writeData(VdmWriter writer, String name, byte[] data) throws IOException {
@@ -50,6 +50,26 @@ public final class VdmUtils {
             stream.write(data, off, len);
         } finally {
             writer.closeEntry(entry);
+        }
+    }
+
+    public static void useStream(VdmReader reader, String name, IOConsumer<? super InputStream> block) throws IOException {
+        val entry = reader.getEntry(name);
+        if (entry == null) {
+            throw new NoSuchFileException(name);
+        }
+        try (val stream = reader.openStream(entry)) {
+            block.accept(stream);
+        }
+    }
+
+    public static <R> R useStream(VdmReader reader, String name, IOFunction<? super InputStream, R> block) throws IOException {
+        val entry = reader.getEntry(name);
+        if (entry == null) {
+            throw new NoSuchFileException(name);
+        }
+        try (val stream = reader.openStream(entry)) {
+            return block.apply(stream);
         }
     }
 
