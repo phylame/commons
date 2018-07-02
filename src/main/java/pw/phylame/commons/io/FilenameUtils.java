@@ -82,7 +82,7 @@ public final class FilenameUtils {
 
     @SneakyThrows(IOException.class)
     public static String mimeType(String path) {
-        return Files.probeContentType(Paths.get(path));
+        return Files.probeContentType(Paths.get(fullName(path)));
     }
 
     public static String detectMime(String mime, String path) {

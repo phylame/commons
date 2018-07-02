@@ -3,8 +3,10 @@ package pw.phylame.commons.text;
 import lombok.NonNull;
 import lombok.val;
 import lombok.var;
+import pw.phylame.commons.value.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.function.Supplier;
 
 /**
@@ -204,16 +206,16 @@ public final class StringUtils {
                 : str;
     }
 
-    public static List<String> split(String str, String separator, int limit) {
+    public static String[] split(String str, String separator, int limit) {
         if (limit <= 0) {
-            return Arrays.asList(str.split(separator));
+            return str.split(separator);
         }
         int i, pos = 0;
         val width = separator.length();
         val results = new ArrayList<String>();
         for (i = 1; i < limit; ++i) {
             val begin = str.indexOf(separator, pos);
-            if (begin < 0) {
+            if (begin == -1) {
                 results.add(str.substring(pos));
                 break;
             }
@@ -223,7 +225,19 @@ public final class StringUtils {
         if (i == limit) {
             results.add(str.substring(pos));
         }
-        return Collections.unmodifiableList(results);
+        return results.toArray(new String[0]);
+    }
+
+    public static Pair<String, String> partition(String str, String separator) {
+        if (isEmpty(str)) {
+            return Pair.of("", "");
+        } else if (isEmpty(separator)) {
+            return Pair.of(str, "");
+        }
+        val index = str.indexOf(separator);
+        return index != -1
+                ? Pair.of(str.substring(0, index), str.substring(index + separator.length()))
+                : Pair.of(str, "");
     }
 
     public static <E> String join(@NonNull Iterable<E> items, CharSequence separator) {
@@ -264,13 +278,13 @@ public final class StringUtils {
             if (isEmpty(part)) {
                 continue;
             }
-            val items = split(part, valueSeparator, 2);
+            val pair = partition(part, valueSeparator);
             if (caseSensitive) {
-                if (name.equals(items.get(0))) {
-                    return items.size() > 1 ? items.get(1) : "";
+                if (name.equals(pair.getFirst())) {
+                    return pair.getSecond();
                 }
-            } else if (name.equalsIgnoreCase(items.get(0))) {
-                return items.size() > 1 ? items.get(1) : "";
+            } else if (name.equalsIgnoreCase(pair.getFirst())) {
+                return pair.getSecond();
             }
         }
         return null;

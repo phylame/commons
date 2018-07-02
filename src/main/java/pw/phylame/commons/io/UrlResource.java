@@ -3,7 +3,7 @@ package pw.phylame.commons.io;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
-import pw.phylame.commons.Validate;
+import pw.phylame.commons.text.StringUtils;
 import pw.phylame.commons.value.Lazy;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ class UrlResource implements Resource {
 
     UrlResource(@NonNull URL url, String name, String contentType) {
         this.url = url;
-        this.name = Validate.nonEmpty(name);
+        this.name = StringUtils.isNotEmpty(name) ? name : StringUtils.partition(url.toString(), "?").getFirst();
         this.contentType = contentType;
     }
 
