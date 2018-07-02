@@ -50,12 +50,24 @@ public final class DateUtils {
         return DateTimeFormatter.ofPattern(pattern).parse(text);
     }
 
+    public static LocalDate parseDate(CharSequence text) {
+        return parseDate(text, LOOSE_DATE_PATTERN);
+    }
+
     public static LocalDate parseDate(CharSequence text, String pattern) {
         return LocalDate.parse(text, DateTimeFormatter.ofPattern(pattern));
     }
 
+    public static LocalTime parseTime(CharSequence text) {
+        return parseTime(text, LOOSE_TIME_PATTERN);
+    }
+
     public static LocalTime parseTime(CharSequence text, String pattern) {
         return LocalTime.parse(text, DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public static LocalDateTime parseDateTime(CharSequence text) {
+        return parseDateTime(text, LOOSE_DATE_TIME_PATTERN);
     }
 
     public static LocalDateTime parseDateTime(CharSequence text, String pattern) {
