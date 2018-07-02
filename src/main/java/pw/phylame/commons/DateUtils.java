@@ -4,6 +4,9 @@ import lombok.NonNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Date;
@@ -45,5 +48,17 @@ public final class DateUtils {
 
     public static TemporalAccessor parse(CharSequence text, String pattern) {
         return DateTimeFormatter.ofPattern(pattern).parse(text);
+    }
+
+    public static LocalDate parseDate(CharSequence text, String pattern) {
+        return LocalDate.parse(text, DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public static LocalTime parseTime(CharSequence text, String pattern) {
+        return LocalTime.parse(text, DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public static LocalDateTime parseDateTime(CharSequence text, String pattern) {
+        return LocalDateTime.parse(text, DateTimeFormatter.ofPattern(pattern));
     }
 }
