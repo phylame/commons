@@ -20,7 +20,7 @@ public final class SettingsUtils {
         }
         val value = settings.get(key);
         if (!type.isInstance(value)) {
-            throw new IllegalArgumentException("`" + key + "` is not " + type);
+            throw new IllegalSettingException("`" + key + "` is not " + type);
         }
         return type.cast(value);
     }
@@ -41,11 +41,10 @@ public final class SettingsUtils {
         val value = get(settings, key);
         if (value == null) {
             return null;
-        }
-        if (value instanceof CharSequence) {
+        } else if (value instanceof CharSequence) {
             return value.toString();
         }
-        throw new IllegalArgumentException("`" + key + "` is not String");
+        throw new IllegalSettingException("`" + key + "` is not String");
     }
 
     public static Object set(Settings settings, String key, Object value) {

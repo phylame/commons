@@ -18,7 +18,7 @@ public final class LineSplitter implements Iterator<String> {
 
     private int from = 0;
     private int begin = 0;
-    private int end = 0;
+    private int end;
 
     public LineSplitter(@NonNull String text) {
         this.text = text;

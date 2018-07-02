@@ -3,6 +3,7 @@ package pw.phylame.commons.vdm.zip;
 import lombok.NonNull;
 import lombok.val;
 import lombok.var;
+import pw.phylame.commons.io.IOUtils;
 import pw.phylame.commons.setting.Settings;
 import pw.phylame.commons.setting.SettingsUtils;
 import pw.phylame.commons.vdm.VdmFactory;
@@ -15,7 +16,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -37,7 +37,7 @@ public final class ZipVdmFactory implements VdmFactory {
     public VdmReader getReader(@NonNull Object input, Settings settings) throws IOException {
         var charset = SettingsUtils.get(settings, CHARSET_KEY, Charset.class);
         if (charset == null) {
-            charset = StandardCharsets.UTF_8;
+            charset = IOUtils.defaultCharset();
         }
         ZipFile zipFile;
         if (input instanceof CharSequence) {
@@ -58,7 +58,7 @@ public final class ZipVdmFactory implements VdmFactory {
     public VdmWriter getWriter(@NonNull Object output, Settings settings) throws IOException {
         var charset = SettingsUtils.get(settings, CHARSET_KEY, Charset.class);
         if (charset == null) {
-            charset = StandardCharsets.UTF_8;
+            charset = IOUtils.defaultCharset();
         }
         ZipOutputStream zipOutput;
         if (output instanceof CharSequence) {

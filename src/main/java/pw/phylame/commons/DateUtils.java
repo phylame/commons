@@ -5,7 +5,6 @@ import lombok.NonNull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
@@ -40,7 +39,7 @@ public final class DateUtils {
         }
     }
 
-    public static String format(Temporal temporal, String pattern) {
+    public static String format(TemporalAccessor temporal, String pattern) {
         return DateTimeFormatter.ofPattern(pattern).format(temporal);
     }
 

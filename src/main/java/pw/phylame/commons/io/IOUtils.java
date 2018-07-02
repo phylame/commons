@@ -3,11 +3,11 @@ package pw.phylame.commons.io;
 import lombok.NonNull;
 import lombok.val;
 import pw.phylame.commons.NestedException;
+import pw.phylame.commons.text.StringUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +30,26 @@ public final class IOUtils {
                 throw new NestedException(e);
             }
         }
+    }
+
+    public static Charset defaultCharset() {
+        return StandardCharsets.UTF_8;
+    }
+
+    public static Charset charsetFor(String name) {
+        return StringUtils.isNotEmpty(name) ? Charset.forName(name) : defaultCharset();
+    }
+
+    public static BufferedInputStream buffered(InputStream input) {
+        return !(input instanceof BufferedInputStream)
+                ? new BufferedInputStream(input, DEFAULT_BUFFER_SIZE)
+                : (BufferedInputStream) input;
+    }
+
+    public static BufferedOutputStream buffered(OutputStream output) {
+        return !(output instanceof BufferedOutputStream)
+                ? new BufferedOutputStream(output, DEFAULT_BUFFER_SIZE)
+                : (BufferedOutputStream) output;
     }
 
     public static long copy(InputStream input, OutputStream output, long size) throws IOException {
@@ -63,6 +83,18 @@ public final class IOUtils {
         return copied;
     }
 
+    public static BufferedReader buffered(Reader reader) {
+        return !(reader instanceof BufferedReader)
+                ? new BufferedReader(reader, DEFAULT_BUFFER_SIZE)
+                : (BufferedReader) reader;
+    }
+
+    public static BufferedWriter buffered(Writer writer) {
+        return !(writer instanceof BufferedWriter)
+                ? new BufferedWriter(writer, DEFAULT_BUFFER_SIZE)
+                : (BufferedWriter) writer;
+    }
+
     public static long copy(@NonNull Reader input, @NonNull Writer output, long size) throws IOException {
         return copy(input, output, size, DEFAULT_BUFFER_SIZE);
     }
@@ -86,17 +118,8 @@ public final class IOUtils {
         return copied;
     }
 
-    public static void write(@NonNull Appendable output, @NonNull Iterator<? extends CharSequence> it, String separator) throws IOException {
-        while (it.hasNext()) {
-            output.append(it.next());
-            if (it.hasNext()) {
-                output.append(separator);
-            }
-        }
-    }
-
     public static String toString(InputStream input) throws IOException {
-        return toString(new InputStreamReader(input, StandardCharsets.UTF_8));
+        return toString(new InputStreamReader(input, defaultCharset()));
     }
 
     public static String toString(InputStream input, Charset charset) throws IOException {
@@ -110,7 +133,7 @@ public final class IOUtils {
     }
 
     public static List<String> toLines(InputStream input) {
-        return toLines(input, StandardCharsets.UTF_8);
+        return toLines(input, defaultCharset());
     }
 
     public static List<String> toLines(InputStream input, Charset charset) {
@@ -118,9 +141,6 @@ public final class IOUtils {
     }
 
     public static List<String> toLines(Reader reader) {
-        val stream = !(reader instanceof BufferedReader)
-                ? new BufferedReader(reader).lines()
-                : ((BufferedReader) reader).lines();
-        return stream.collect(Collectors.toList());
+        return buffered(reader).lines().collect(Collectors.toList());
     }
 }

@@ -2,8 +2,10 @@ package pw.phylame.commons.text;
 
 import lombok.Builder;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.val;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.function.BiFunction;
 
@@ -28,23 +30,28 @@ public final class StringJoiner<E> {
 
     private CharSequence suffix;
 
-    public String join() {
-        val b = new StringBuilder();
+    public void writeTo(@NonNull Appendable output) throws IOException {
         if (isNotEmpty(prefix)) {
-            b.append(prefix);
+            output.append(prefix);
         }
         int index = 0;
         while (iterator.hasNext()) {
             E next = iterator.next();
-            b.append(transform != null ? transform.apply(index, next) : String.valueOf(next));
+            output.append(transform != null ? transform.apply(index, next) : String.valueOf(next));
             if (iterator.hasNext()) {
-                b.append(separator);
+                output.append(separator);
             }
             ++index;
         }
         if (isNotEmpty(suffix)) {
-            b.append(suffix);
+            output.append(suffix);
         }
+    }
+
+    @SneakyThrows(IOException.class)
+    public String join() {
+        val b = new StringBuilder();
+        writeTo(b);
         return b.toString();
     }
 }

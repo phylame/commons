@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
 /**
@@ -28,7 +27,7 @@ public final class Texts {
 
     public static Text of(@NonNull Resource resource, Charset charset, String type) {
         Validate.nonEmpty(type, "`type` cannot be null or empty");
-        return new ResourceText(resource, charset != null ? charset : StandardCharsets.UTF_8, type);
+        return new ResourceText(resource, charset != null ? charset : IOUtils.defaultCharset(), type);
     }
 
     @RequiredArgsConstructor

@@ -71,7 +71,7 @@ public final class TypeMapping {
         for (val item : items.values()) {
             names.addAll(item.aliases);
         }
-        return names.toArray(new String[names.size()]);
+        return names.toArray(new String[0]);
     }
 
     public void mapType(String name, @NonNull Class<?> type) {

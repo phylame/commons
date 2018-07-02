@@ -4,12 +4,12 @@ import lombok.NonNull;
 import lombok.val;
 import pw.phylame.commons.CollectionUtils;
 import pw.phylame.commons.format.FormatterService;
+import pw.phylame.commons.io.IOUtils;
 import pw.phylame.commons.io.Persistable;
 import pw.phylame.commons.io.Resources;
 import pw.phylame.commons.value.Pair;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -93,11 +93,11 @@ public class MapSettings extends AbstractSettings implements Persistable {
 
     @Override
     public void load(@NonNull InputStream input) throws IOException {
-        load(new InputStreamReader(input, StandardCharsets.UTF_8));
+        load(new InputStreamReader(input, IOUtils.defaultCharset()));
     }
 
     @Override
     public void sync(@NonNull OutputStream output) throws IOException {
-        sync(new OutputStreamWriter(output, StandardCharsets.UTF_8), null);
+        sync(new OutputStreamWriter(output, IOUtils.defaultCharset()), null);
     }
 }

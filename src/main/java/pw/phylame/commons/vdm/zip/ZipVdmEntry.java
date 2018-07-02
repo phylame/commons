@@ -1,6 +1,7 @@
 package pw.phylame.commons.vdm.zip;
 
 import lombok.RequiredArgsConstructor;
+import pw.phylame.commons.io.FilenameUtils;
 import pw.phylame.commons.vdm.VdmEntry;
 
 import java.util.zip.ZipEntry;
@@ -40,5 +41,14 @@ class ZipVdmEntry implements VdmEntry {
     @Override
     public boolean isDirectory() {
         return zipEntry.isDirectory();
+    }
+
+    @Override
+    public String toString() {
+        if (reader != null) {
+            return "zip:file:/" + FilenameUtils.slashified(reader.getName()) + "!" + zipEntry.getName();
+        } else {
+            return zipEntry.getName();
+        }
     }
 }
