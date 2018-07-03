@@ -33,8 +33,8 @@ public class MapFileTypeDetector extends FileTypeDetector {
                 }
             }
         } catch (IOException e) {
-            if (log.isDebugEnabled()) {
-                log.debug("cannot load mime types from " + path, e);
+            if (log.isErrorEnabled()) {
+                log.error("cannot load mime types from " + path, e);
             }
         }
     }

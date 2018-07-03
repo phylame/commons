@@ -71,7 +71,7 @@ public class ServiceManager<T extends KeyedService> {
                 services.add(service);
             }
         } catch (ServiceConfigurationError e) {
-            log.debug("Error when loading services", e);
+            log.error("error when loading services", e);
         }
         loaded = true;
     }
