@@ -147,7 +147,6 @@ public final class TypeMapping {
                     }
                     val parts = path.split(",");
                     val item = new Item();
-                    item.name = name;
                     item.path = parts[0];
                     if (parts.length > 1) {
                         item.inheritable = Boolean.valueOf(parts[1]);
@@ -182,7 +181,6 @@ public final class TypeMapping {
         var item = lookupItem(name);
         if (item == null) {
             items.put(name, item = new Item());
-            item.name = name;
         }
         return item;
     }
@@ -216,8 +214,6 @@ public final class TypeMapping {
     }
 
     private static class Item {
-        String name;
-
         String path;
 
         Class<?> type;

@@ -78,7 +78,7 @@ public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, 
     }
 
     public void clear() {
-        Disposables.release(values.values());
+        Disposables.releaseAll(values.values());
         values.clear();
     }
 
@@ -102,7 +102,7 @@ public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, 
     public AttributeMap clone() {
         val am = (AttributeMap) super.clone();
         am.values = (HashMap<String, Object>) values.clone();
-        Disposables.retain(am.values.values());
+        Disposables.retainAll(am.values.values());
         return am;
     }
 }

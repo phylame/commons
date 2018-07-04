@@ -33,7 +33,7 @@ public final class FormatterService {
 
     private final IdentityHashMap<Class<?>, Formatter<?>> formatters = new IdentityHashMap<>();
 
-    public <T extends Enum> void register(@NonNull Class<T> enumType) {
+    public <T extends Enum<T>> void register(@NonNull Class<T> enumType) {
         register(enumType, new DefaultFormatter<>(enumType));
     }
 
@@ -49,9 +49,7 @@ public final class FormatterService {
 
     @SuppressWarnings("unchecked")
     public String render(@NonNull Object obj) {
-        return !(obj instanceof CharSequence)
-                ? render(obj, (Class<Object>) obj.getClass())
-                : obj.toString();
+        return !(obj instanceof CharSequence) ? render(obj, (Class<Object>) obj.getClass()) : obj.toString();
     }
 
     @SuppressWarnings("unchecked")
@@ -116,7 +114,7 @@ public final class FormatterService {
             if (Date.class.isAssignableFrom(type)) {
                 return DateUtils.toISO((Date) obj);
             } else if (Enum.class.isAssignableFrom(type)) {
-                return ((Enum) obj).name();
+                return ((Enum<?>) obj).name();
             } else if (type == Locale.class) {
                 return ((Locale) obj).toLanguageTag();
             } else if (type == Charset.class) {
@@ -126,7 +124,7 @@ public final class FormatterService {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes"})
         public T parse(String str) {
             if (type == Integer.class) {
                 return (T) Integer.decode(str);
