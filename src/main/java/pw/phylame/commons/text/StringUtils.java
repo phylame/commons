@@ -87,6 +87,22 @@ public final class StringUtils {
         return counter;
     }
 
+    public static int size(int x) {
+        int d = 1;
+        if (x >= 0) {
+            d = 0;
+            x = -x;
+        }
+        int p = -10;
+        for (int i = 1; i < 10; i++) {
+            if (x > p) {
+                return i + d;
+            }
+            p = 10 * p;
+        }
+        return 10 + d;
+    }
+
     public static String repeat(CharSequence cs, int count) {
         val b = new StringBuilder();
         for (int i = 0; i < count; i++) {
@@ -99,7 +115,7 @@ public final class StringUtils {
         return isNotEmpty(str) ? str : emptyDefault;
     }
 
-    public static String coalesce(String str, Supplier<String> emptySupplier) {
+    public static String coalesce(String str, @NonNull Supplier<String> emptySupplier) {
         return isNotEmpty(str) ? str : emptySupplier.get();
     }
 
@@ -177,7 +193,7 @@ public final class StringUtils {
         }
     }
 
-    public static String replace(String str, String target, String replacement, int limit) {
+    public static String replace(String str, String target, @NonNull String replacement, int limit) {
         if (isEmpty(str) || isEmpty(target) || limit <= 0) {
             return str;
         }
@@ -196,7 +212,17 @@ public final class StringUtils {
         return b.toString();
     }
 
-    public static String replaceLast(String str, String target, String replacement) {
+    public static String replaceFirst(String str, String target, @NonNull String replacement) {
+        if (isEmpty(str) || isEmpty(target)) {
+            return str;
+        }
+        val index = str.indexOf(target);
+        return index != -1
+                ? str.substring(0, index) + replacement + str.substring(index + target.length())
+                : str;
+    }
+
+    public static String replaceLast(String str, String target, @NonNull String replacement) {
         if (isEmpty(str) || isEmpty(target)) {
             return str;
         }
@@ -206,7 +232,7 @@ public final class StringUtils {
                 : str;
     }
 
-    public static String[] split(String str, String separator, int limit) {
+    public static String[] split(@NonNull String str, @NonNull String separator, int limit) {
         if (limit <= 0) {
             return str.split(separator);
         }
@@ -240,7 +266,7 @@ public final class StringUtils {
                 : Pair.of(str, "");
     }
 
-    public static <E> String join(@NonNull Iterable<E> items, CharSequence separator) {
+    public static <E> String join(@NonNull Iterable<E> items, @NonNull CharSequence separator) {
         return StringJoiner.<E>builder()
                 .iterator(items.iterator())
                 .separator(separator)
@@ -248,7 +274,7 @@ public final class StringUtils {
                 .join();
     }
 
-    public static <E> String join(@NonNull Iterator<E> iterator, CharSequence separator) {
+    public static <E> String join(@NonNull Iterator<E> iterator, @NonNull CharSequence separator) {
         return StringJoiner.<E>builder()
                 .iterator(iterator)
                 .separator(separator)
