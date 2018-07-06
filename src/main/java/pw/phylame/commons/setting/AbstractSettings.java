@@ -95,8 +95,6 @@ public abstract class AbstractSettings implements Settings {
             }
             if (converted == null) {
                 throw new IllegalArgumentException("`" + key + "` is not " + type);
-            } else {
-                handleSet(key, converted);
             }
             return converted;
         }
