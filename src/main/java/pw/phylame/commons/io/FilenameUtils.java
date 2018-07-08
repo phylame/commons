@@ -60,9 +60,13 @@ public final class FilenameUtils {
         return Pair.of(end, begin);
     }
 
-    public static String dirName(String path) {
+    public static String dirPath(String path) {
         val index = splitPath(path).getFirst();
         return index != -1 ? path.substring(0, index) : "";
+    }
+
+    public static String dirName(String path) {
+        return fullName(dirPath(path));
     }
 
     public static String fullName(String path) {
