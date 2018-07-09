@@ -60,6 +60,30 @@ public final class IOUtils {
         return copy(ByteSource.of(input), ByteSink.of(output), size, bufferSize);
     }
 
+    public static long copy(InputStream input, RandomAccessFile output, long size) throws IOException {
+        return copy(input, output, size, DEFAULT_BUFFER_SIZE);
+    }
+
+    public static long copy(InputStream input, RandomAccessFile output, long size, int bufferSize) throws IOException {
+        return copy(ByteSource.of(input), ByteSink.of(output), size, bufferSize);
+    }
+
+    public static long copy(RandomAccessFile input, OutputStream output, long size) throws IOException {
+        return copy(input, output, size, DEFAULT_BUFFER_SIZE);
+    }
+
+    public static long copy(RandomAccessFile input, OutputStream output, long size, int bufferSize) throws IOException {
+        return copy(ByteSource.of(input), ByteSink.of(output), size, bufferSize);
+    }
+
+    public static long copy(RandomAccessFile input, RandomAccessFile output, long size) throws IOException {
+        return copy(input, output, size, DEFAULT_BUFFER_SIZE);
+    }
+
+    public static long copy(RandomAccessFile input, RandomAccessFile output, long size, int bufferSize) throws IOException {
+        return copy(ByteSource.of(input), ByteSink.of(output), size, bufferSize);
+    }
+
     public static long copy(ByteSource input, ByteSink output, long size) throws IOException {
         return copy(input, output, size, DEFAULT_BUFFER_SIZE);
     }
