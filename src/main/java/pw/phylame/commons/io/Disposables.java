@@ -39,4 +39,8 @@ public final class Disposables {
         }
         return obj;
     }
+
+    public static <C extends AutoCloseable> DisposableWrapper<C> of(C source) {
+        return new DisposableWrapper<>(source);
+    }
 }
