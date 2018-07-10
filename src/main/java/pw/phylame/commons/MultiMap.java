@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static pw.phylame.commons.CollectionUtils.firstOf;
 import static pw.phylame.commons.CollectionUtils.isNotEmpty;
@@ -91,6 +92,10 @@ public final class MultiMap<K, V> implements Iterable<Map.Entry<K, Collection<V>
     @Override
     public Iterator<Map.Entry<K, Collection<V>>> iterator() {
         return map.entrySet().iterator();
+    }
+
+    public Stream<Map.Entry<K, Collection<V>>> stream() {
+        return map.entrySet().stream();
     }
 
     @Override

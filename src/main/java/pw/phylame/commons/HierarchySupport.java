@@ -7,6 +7,7 @@ import lombok.val;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 import static pw.phylame.commons.Validate.require;
 
@@ -96,6 +97,10 @@ public abstract class HierarchySupport<T extends HierarchySupport<T>> implements
     @Override
     public final Iterator<T> iterator() {
         return children.iterator();
+    }
+
+    public final Stream<T> stream() {
+        return children.stream();
     }
 
     @SuppressWarnings("unchecked")
