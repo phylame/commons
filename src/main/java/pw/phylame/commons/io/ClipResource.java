@@ -51,12 +51,12 @@ public class ClipResource extends AbstractResource implements Disposable {
     public void transferTo(ByteSink output) throws IOException {
         val raf = ref.getSource();
         raf.seek(offset);
-        IOUtils.copy(ByteSource.of(raf), output, -1);
+        IOUtils.copy(ByteSource.of(raf), output, length);
     }
 
     @Override
     public String toString() {
-        return "clip://" + super.toString();
+        return "clip://{" + offset + "," + length + "}!" + super.toString();
     }
 
     @Override

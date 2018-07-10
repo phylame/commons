@@ -35,50 +35,44 @@ public class RandomAccessFileInputStream extends InputStream {
     }
 
     @Override
-    public int read() throws IOException {
+    public synchronized int read() throws IOException {
         if (curpos < endpos) {
-            synchronized (this) {
-                ++curpos;
-                return file.read();
-            }
+            ++curpos;
+            return file.read();
         } else {
             return -1;
         }
     }
 
     @Override
-    public int read(@NonNull byte[] b, int off, int len) throws IOException {
+    public synchronized int read(@NonNull byte[] b, int off, int len) throws IOException {
         if (off < 0 || len < 0 || len > b.length - off) {
             throw new IndexOutOfBoundsException();
         } else if (len == 0) {
             return 0;
         }
-        synchronized (this) {
-            long count = endpos - curpos;
-            if (count == 0) {
-                return -1;
-            }
-            count = count < len ? count : len;
-            len = file.read(b, off, (int) count);
-            curpos += count;
-            return len;
+        long count = endpos - curpos;
+        if (count == 0) {
+            return -1;
         }
+        count = Math.min(count, len);
+        len = file.read(b, off, (int) count);
+        curpos += count;
+        return len;
     }
 
     @Override
-    public long skip(long n) throws IOException {
+    public synchronized long skip(long n) throws IOException {
         if (n < 0) {
             return 0;
         }
-        synchronized (this) {
-            n = file.skipBytes((int) Math.min(n, endpos - curpos));
-            curpos = Math.min(curpos + n, endpos);
-            return n;
-        }
+        n = file.skipBytes((int) Math.min(n, endpos - curpos));
+        curpos = Math.min(curpos + n, endpos);
+        return n;
     }
 
     @Override
-    public int available() throws IOException {
+    public int available() {
         return (int) (endpos - curpos);
     }
 }
