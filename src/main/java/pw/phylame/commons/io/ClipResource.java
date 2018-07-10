@@ -8,7 +8,6 @@ import pw.phylame.commons.Validate;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.RandomAccessFile;
 
 public class ClipResource extends AbstractResource implements Disposable {
@@ -21,19 +20,19 @@ public class ClipResource extends AbstractResource implements Disposable {
 
     private final long length;
 
-    private DisposableSupport support = new DisposableSupport() {
+    private final DisposableSupport support = new DisposableSupport() {
         @Override
-        public void close() throws Exception {
-
+        public void close() {
+            Disposables.release(file);
         }
     };
 
     public ClipResource(String name, @NonNull DisposableWrapper<RandomAccessFile> file, long offset, long length, String mime) throws IOException {
         super(mime);
         this.name = name;
-        this.file = file;
         this.offset = offset;
         this.length = length;
+        this.file = Disposables.retain(file);
         Validate.require(offset + length <= file.getSource().length(), "Invalid offset or length");
     }
 
@@ -44,14 +43,15 @@ public class ClipResource extends AbstractResource implements Disposable {
 
     @Override
     public InputStream openStream() throws IOException {
+        file.getSource().seek(offset);
         return new RandomAccessFileInputStream(file.getSource(), offset, length);
     }
 
     @Override
-    public void transferTo(OutputStream output) throws IOException {
+    public void transferTo(ByteSink output) throws IOException {
         val raf = file.getSource();
         raf.seek(offset);
-        IOUtils.copy(raf, output, -1);
+        IOUtils.copy(ByteSource.of(raf), output, -1);
     }
 
     @Override

@@ -11,9 +11,9 @@ import java.io.RandomAccessFile;
 public class RandomAccessFileInputStream extends InputStream {
     private final RandomAccessFile file;
 
-    private final long endpos;
+    private volatile long curpos;
 
-    private long curpos;
+    private final long endpos;
 
     public RandomAccessFileInputStream(RandomAccessFile file) throws IOException {
         this(file, file.getFilePointer(), -1);
@@ -30,8 +30,6 @@ public class RandomAccessFileInputStream extends InputStream {
         curpos = (offset < 0) ? 0 : offset;
         endpos = (size < 0) ? length : curpos + size;
 
-        file.seek(curpos);
-
         Validate.require(curpos < length, "offset >= length of file");
         Validate.require(endpos <= length, "offset + size > length of file");
     }
@@ -39,8 +37,10 @@ public class RandomAccessFileInputStream extends InputStream {
     @Override
     public int read() throws IOException {
         if (curpos < endpos) {
-            ++curpos;
-            return file.read();
+            synchronized (this) {
+                ++curpos;
+                return file.read();
+            }
         } else {
             return -1;
         }
@@ -53,14 +53,16 @@ public class RandomAccessFileInputStream extends InputStream {
         } else if (len == 0) {
             return 0;
         }
-        long count = endpos - curpos;
-        if (count == 0) {
-            return -1;
+        synchronized (this) {
+            long count = endpos - curpos;
+            if (count == 0) {
+                return -1;
+            }
+            count = count < len ? count : len;
+            len = file.read(b, off, (int) count);
+            curpos += count;
+            return len;
         }
-        count = count < len ? count : len;
-        len = file.read(b, off, (int) count);
-        curpos += count;
-        return len;
     }
 
     @Override
@@ -68,9 +70,11 @@ public class RandomAccessFileInputStream extends InputStream {
         if (n < 0) {
             return 0;
         }
-        n = file.skipBytes((int) Math.min(n, endpos - curpos));
-        curpos = Math.min(curpos + n, endpos);
-        return n;
+        synchronized (this) {
+            n = file.skipBytes((int) Math.min(n, endpos - curpos));
+            curpos = Math.min(curpos + n, endpos);
+            return n;
+        }
     }
 
     @Override

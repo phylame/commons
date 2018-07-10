@@ -5,7 +5,6 @@ import pw.phylame.commons.Validate;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * @author wp <phylame@163.com>
@@ -20,10 +19,10 @@ public interface Resource {
 
     InputStream openStream() throws IOException;
 
-    default void transferTo(OutputStream output) throws IOException {
+    default void transferTo(ByteSink output) throws IOException {
         Validate.nonNull(output);
         try (val input = openStream()) {
-            IOUtils.copy(input, output, -1);
+            IOUtils.copy(ByteSource.of(input), output, -1);
         }
     }
 }

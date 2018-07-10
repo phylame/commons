@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * @author wp <phylame@163.com>
@@ -37,7 +36,7 @@ public class ResourceWrapper implements Resource {
     }
 
     @Override
-    public void transferTo(OutputStream output) throws IOException {
+    public void transferTo(ByteSink output) throws IOException {
         resource.transferTo(output);
     }
 
