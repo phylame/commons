@@ -32,11 +32,9 @@ public final class CollectionUtils {
             return Optional.ofNullable(((List<E>) c).get(0));
         } else {
             val it = c.iterator();
-            if (it.hasNext()) {
-                return Optional.ofNullable(it.next());
-            } else {
-                return Optional.empty();
-            }
+            return it.hasNext()
+                    ? Optional.ofNullable(it.next())
+                    : Optional.empty();
         }
     }
 

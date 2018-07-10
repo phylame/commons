@@ -6,6 +6,7 @@ import lombok.val;
 import lombok.var;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -17,22 +18,40 @@ import static pw.phylame.commons.CollectionUtils.isNotEmpty;
  * @date 2018/06/2018
  */
 @RequiredArgsConstructor
-public final class MultiMap<K, V> {
+public final class MultiMap<K, V> implements Iterable<Map.Entry<K, Collection<V>>> {
     @NonNull
     private final Map<K, Collection<V>> map;
 
     @NonNull
     private final Supplier<Collection<V>> supplier;
 
-    public void put(K key, V value) {
+    public void add(K key, V value) {
         getOrCreate(key).add(value);
     }
 
-    public void putAll(K key, Collection<? extends V> c) {
+    public void addAll(K key, @NonNull Collection<? extends V> c) {
         getOrCreate(key).addAll(c);
     }
 
-    public void putAll(MultiMap<K, V> m) {
+    public void addAll(@NonNull MultiMap<K, V> m) {
+        for (val entry : m.map.entrySet()) {
+            addAll(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public void put(K key, V value) {
+        val items = getOrCreate(key);
+        items.clear();
+        items.add(value);
+    }
+
+    public void putAll(K key, @NonNull Collection<? extends V> c) {
+        val items = getOrCreate(key);
+        items.clear();
+        items.addAll(c);
+    }
+
+    public void putAll(@NonNull MultiMap<K, V> m) {
         map.putAll(m.map);
     }
 
@@ -67,6 +86,16 @@ public final class MultiMap<K, V> {
 
     public void clear() {
         map.clear();
+    }
+
+    @Override
+    public Iterator<Map.Entry<K, Collection<V>>> iterator() {
+        return map.entrySet().iterator();
+    }
+
+    @Override
+    public String toString() {
+        return map.toString();
     }
 
     private Collection<V> getOrCreate(K key) {
