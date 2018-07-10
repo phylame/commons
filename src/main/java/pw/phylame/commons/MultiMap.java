@@ -32,6 +32,10 @@ public final class MultiMap<K, V> {
         getOrCreate(key).addAll(c);
     }
 
+    public void putAll(MultiMap<K, V> m) {
+        map.putAll(m.map);
+    }
+
     public int size() {
         return map.size();
     }
