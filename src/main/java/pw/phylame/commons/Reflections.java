@@ -25,4 +25,12 @@ public final class Reflections {
         val loader = Thread.currentThread().getContextClassLoader();
         return loader != null ? loader : ClassLoader.getSystemClassLoader();
     }
+
+    public static String packagePath(Class<?> clazz) {
+        return clazz.getPackage().getName().replace('.', '/');
+    }
+
+    public static String resourcePath(Class<?> clazz, String name) {
+        return packagePath(clazz) + '/' + name;
+    }
 }
