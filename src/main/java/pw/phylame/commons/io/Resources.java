@@ -69,7 +69,13 @@ public final class Resources {
     }
 
     public static Lazy<Properties> lazyProperties(String uri, ClassLoader loader, boolean useCache) {
-        return Lazy.of(() -> getProperties(uri, loader, useCache));
+        return Lazy.of(() -> {
+            val props = getProperties(uri, loader, useCache);
+            if (props == null) {
+                throw new RuntimeException("No such properties: " + uri);
+            }
+            return props;
+        });
     }
 
     public static Properties getProperties(String uri) {
