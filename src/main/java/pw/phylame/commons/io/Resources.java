@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 import pw.phylame.commons.Reflections;
 import pw.phylame.commons.Validate;
+import pw.phylame.commons.value.Lazy;
 import pw.phylame.commons.vdm.VdmEntry;
 import pw.phylame.commons.vdm.VdmReader;
 
@@ -61,6 +62,14 @@ public final class Resources {
             return conn.getInputStream();
         }
         return null;
+    }
+
+    public static Lazy<Properties> lazyProperties(String uri) {
+        return lazyProperties(uri, null, true);
+    }
+
+    public static Lazy<Properties> lazyProperties(String uri, ClassLoader loader, boolean useCache) {
+        return Lazy.of(() -> getProperties(uri, loader, useCache));
     }
 
     public static Properties getProperties(String uri) {
