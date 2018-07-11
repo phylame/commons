@@ -7,12 +7,10 @@ import lombok.var;
 import pw.phylame.commons.NestedException;
 import pw.phylame.commons.Validate;
 import pw.phylame.commons.io.FilenameUtils;
-import pw.phylame.commons.io.IOUtils;
 import pw.phylame.commons.io.Resources;
 import pw.phylame.commons.text.StringUtils;
 import pw.phylame.commons.text.Texts;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -131,36 +129,26 @@ public final class TypeMapping {
     }
 
     public void registerBuiltins() {
-        val stream = TypeMapping.class.getResourceAsStream("types.properties");
-        if (stream != null) {
-            try {
-                val prop = new Properties();
-                prop.load(stream);
-                for (val e : prop.entrySet()) {
-                    val name = e.getKey().toString().trim();
-                    if (StringUtils.isEmpty(name)) {
-                        throw new RuntimeException("Type name cannot be empty");
-                    }
-                    val path = e.getValue().toString().trim();
-                    if (StringUtils.isEmpty(path)) {
-                        throw new RuntimeException("Class path cannot be empty for " + name);
-                    }
-                    val parts = path.split(",");
-                    val item = new Item();
-                    item.path = parts[0];
-                    if (parts.length > 1) {
-                        item.inheritable = Boolean.valueOf(parts[1]);
-                    }
-                    items.put(name, item);
+        val props = Resources.getProperties(TypeMapping.class.getName() + ".types.properties");
+        if (props != null) {
+            for (val e : props.entrySet()) {
+                val name = e.getKey().toString().trim();
+                if (StringUtils.isEmpty(name)) {
+                    throw new RuntimeException("Type name cannot be empty");
                 }
-                initDefaults();
-            } catch (IOException e) {
-                throw new NestedException(e);
-            } finally {
-                IOUtils.closeQuietly(stream);
+                val path = e.getValue().toString().trim();
+                if (StringUtils.isEmpty(path)) {
+                    throw new RuntimeException("Class path cannot be empty for " + name);
+                }
+                val parts = path.split(",");
+                val item = new Item();
+                item.path = parts[0];
+                if (parts.length > 1) {
+                    item.inheritable = Boolean.valueOf(parts[1]);
+                }
+                items.put(name, item);
             }
-        } else {
-            log.debug("not found type mapping file");
+            initDefaults();
         }
     }
 

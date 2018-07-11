@@ -1,6 +1,7 @@
 package pw.phylame.commons.io;
 
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.val;
 import pw.phylame.commons.Reflections;
 import pw.phylame.commons.Validate;
@@ -15,6 +16,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 /**
  * @author wp <phylame@163.com>
@@ -57,6 +59,21 @@ public final class Resources {
             val conn = url.openConnection();
             conn.setUseCaches(useCache);
             return conn.getInputStream();
+        }
+        return null;
+    }
+
+    public static Properties getProperties(String uri) {
+        return getProperties(uri, null, true);
+    }
+
+    @SneakyThrows(IOException.class)
+    public static Properties getProperties(String uri, ClassLoader loader, boolean useCache) {
+        val input = open(uri, loader, useCache);
+        if (input != null) {
+            val props = new Properties();
+            props.load(input);
+            return props;
         }
         return null;
     }
