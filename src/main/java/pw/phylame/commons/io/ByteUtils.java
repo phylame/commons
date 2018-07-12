@@ -34,7 +34,7 @@ public final class ByteUtils {
         }
 
         val begin = from >> 3;
-        val end = to >> 3;
+        val end = --to >> 3;
 
         if (begin == end) {
             return ByteUtils.value(src[begin], from % 8, to % 8);
