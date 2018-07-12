@@ -12,42 +12,43 @@ public final class ByteUtils {
         return (b & mark) != 0;
     }
 
-    public static int value(byte b, int from, int to) {
+    public static int value(byte b, int off, int len) {
         var mark = 1;
-        for (int i = to - 1; i >= from; --i) {
+        val end = off + len - 1;
+        for (int i = end - 1; i >= off; --i) {
             mark |= 2 << i;
         }
-        return b >> 7 - to & mark;
+        return b >> 7 - end & mark;
     }
 
-    public static long value(byte[] src, int from, int to) {
-        return value(src, from, to, ByteOrder.nativeOrder());
+    public static long value(byte[] src, int off, int len) {
+        return value(src, off, len, ByteOrder.nativeOrder());
     }
 
     private static final long[] FACTORS = {0x1, 0x100, 0x10000, 0x1000000, 0x100000000L};
 
-    public static long value(byte[] src, int from, int to, ByteOrder order) {
-        if (from > to) {
-            throw new IllegalArgumentException("from > to");
-        } else if (from == to) {
-            return 0;
+    public static long value(byte[] src, int off, int len, ByteOrder order) {
+        if (len == 0) {
+            return 0L;
         }
 
-        val begin = from >> 3;
-        val end = --to >> 3;
+        val to = off + len - 1;
+
+        val begin = off >> 3;
+        val end = to >> 3;
 
         if (begin == end) {
-            return ByteUtils.value(src[begin], from % 8, to % 8);
+            return value(src[begin], off % 8, to % 8);
         }
 
         var sum = 0L;
         if (order == ByteOrder.LITTLE_ENDIAN) {
             for (int i = begin; i <= end; i++) {
-                sum += ByteUtils.value(src[i], 0, 7) * FACTORS[i - begin];
+                sum += value(src[i], 0, 8) * FACTORS[i - begin];
             }
         } else {
             for (int i = begin; i <= end; i++) {
-                sum += ByteUtils.value(src[i], 0, 7) * FACTORS[end - i];
+                sum += value(src[i], 0, 8) * FACTORS[end - i];
             }
         }
         return sum;
