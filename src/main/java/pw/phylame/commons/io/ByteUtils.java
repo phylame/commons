@@ -1,14 +1,57 @@
 package pw.phylame.commons.io;
 
 import lombok.val;
+import lombok.var;
+
+import java.nio.ByteOrder;
 
 public final class ByteUtils {
-    public enum Endian {
-        BIG,
-        LITTLE
+    public static boolean exists(byte[] src, int index) {
+        val b = src[index >> 3];
+        val mark = 2 << (6 - index % 8);
+        return (b & mark) != 0;
     }
 
-    public static final Endian DEFAULT_ENDIAN = Endian.BIG;
+    public static int value(byte b, int from, int to) {
+        var mark = 1;
+        for (int i = to - 1; i >= from; --i) {
+            mark |= 2 << i;
+        }
+        return b >> 7 - to & mark;
+    }
+
+    public static long value(byte[] src, int from, int to) {
+        return value(src, from, to, ByteOrder.nativeOrder());
+    }
+
+    private static final long[] FACTORS = {0x1, 0x100, 0x10000, 0x1000000, 0x100000000L};
+
+    public static long value(byte[] src, int from, int to, ByteOrder order) {
+        if (from > to) {
+            throw new IllegalArgumentException("from > to");
+        } else if (from == to) {
+            return 0;
+        }
+
+        val begin = from >> 3;
+        val end = to >> 3;
+
+        if (begin == end) {
+            return ByteUtils.value(src[begin], from % 8, to % 8);
+        }
+
+        var sum = 0L;
+        if (order == ByteOrder.LITTLE_ENDIAN) {
+            for (int i = begin; i <= end; i++) {
+                sum += ByteUtils.value(src[i], 0, 7) * FACTORS[i - begin];
+            }
+        } else {
+            for (int i = begin; i <= end; i++) {
+                sum += ByteUtils.value(src[i], 0, 7) * FACTORS[end - i];
+            }
+        }
+        return sum;
+    }
 
     public static byte[] putInt8(byte x) {
         return putUint8(x, new byte[1], 0);
@@ -28,35 +71,35 @@ public final class ByteUtils {
     }
 
     public static byte[] putInt16(short x) {
-        return putUint16(x, new byte[2], 0, DEFAULT_ENDIAN);
+        return putUint16(x, new byte[2], 0, ByteOrder.nativeOrder());
     }
 
     public static byte[] putInt16(short x, byte[] dst, int off) {
-        return putUint16(x, dst, off, DEFAULT_ENDIAN);
+        return putUint16(x, dst, off, ByteOrder.nativeOrder());
     }
 
-    public static byte[] putInt16(short x, Endian endian) {
-        return putUint16(x, new byte[2], 0, endian);
+    public static byte[] putInt16(short x, ByteOrder order) {
+        return putUint16(x, new byte[2], 0, order);
     }
 
-    public static byte[] putInt16(short x, byte[] dst, int off, Endian endian) {
-        return putUint16(x, dst, off, endian);
+    public static byte[] putInt16(short x, byte[] dst, int off, ByteOrder order) {
+        return putUint16(x, dst, off, order);
     }
 
     public static byte[] putUint16(int x) {
-        return putUint16(x, new byte[2], 0, DEFAULT_ENDIAN);
+        return putUint16(x, new byte[2], 0, ByteOrder.nativeOrder());
     }
 
     public static byte[] putUint16(int x, byte[] dst, int off) {
-        return putUint16(x, dst, off, DEFAULT_ENDIAN);
+        return putUint16(x, dst, off, ByteOrder.nativeOrder());
     }
 
-    public static byte[] putUint16(int x, Endian endian) {
-        return putUint16(x, new byte[2], 0, endian);
+    public static byte[] putUint16(int x, ByteOrder order) {
+        return putUint16(x, new byte[2], 0, order);
     }
 
-    public static byte[] putUint16(int x, byte[] dst, int off, Endian endian) {
-        if (endian == Endian.BIG) {
+    public static byte[] putUint16(int x, byte[] dst, int off, ByteOrder order) {
+        if (order == ByteOrder.BIG_ENDIAN) {
             dst[off] = (byte) (x >> 8);
             dst[off + 1] = (byte) (x);
         } else {
@@ -67,35 +110,35 @@ public final class ByteUtils {
     }
 
     public static byte[] putInt32(int x) {
-        return putUint32(x, new byte[4], 0, DEFAULT_ENDIAN);
+        return putUint32(x, new byte[4], 0, ByteOrder.nativeOrder());
     }
 
     public static byte[] putInt32(int x, byte[] dst, int off) {
-        return putUint32(x, dst, off, DEFAULT_ENDIAN);
+        return putUint32(x, dst, off, ByteOrder.nativeOrder());
     }
 
-    public static byte[] putInt32(int x, Endian endian) {
-        return putUint32(x, new byte[4], 0, endian);
+    public static byte[] putInt32(int x, ByteOrder order) {
+        return putUint32(x, new byte[4], 0, order);
     }
 
-    public static byte[] putInt32(int x, byte[] dst, int off, Endian endian) {
-        return putUint32(x, dst, off, endian);
+    public static byte[] putInt32(int x, byte[] dst, int off, ByteOrder order) {
+        return putUint32(x, dst, off, order);
     }
 
     public static byte[] putUint32(long x) {
-        return putUint32(x, new byte[4], 0, DEFAULT_ENDIAN);
+        return putUint32(x, new byte[4], 0, ByteOrder.nativeOrder());
     }
 
     public static byte[] putUint32(long x, byte[] dst, int off) {
-        return putUint32(x, dst, off, DEFAULT_ENDIAN);
+        return putUint32(x, dst, off, ByteOrder.nativeOrder());
     }
 
-    public static byte[] putUint32(long x, Endian endian) {
-        return putUint32(x, new byte[4], 0, endian);
+    public static byte[] putUint32(long x, ByteOrder order) {
+        return putUint32(x, new byte[4], 0, order);
     }
 
-    public static byte[] putUint32(long x, byte[] dst, int off, Endian endian) {
-        if (endian == Endian.BIG) {
+    public static byte[] putUint32(long x, byte[] dst, int off, ByteOrder order) {
+        if (order == ByteOrder.BIG_ENDIAN) {
             dst[off] = (byte) (x >> 24);
             dst[off + 1] = (byte) (x >> 16);
             dst[off + 2] = (byte) (x >> 8);
@@ -118,11 +161,11 @@ public final class ByteUtils {
     }
 
     public static short getInt16(byte[] src, int off) {
-        return getInt16(src, off, DEFAULT_ENDIAN);
+        return getInt16(src, off, ByteOrder.nativeOrder());
     }
 
-    public static short getInt16(byte[] src, int off, Endian endian) {
-        if (endian == Endian.BIG) {
+    public static short getInt16(byte[] src, int off, ByteOrder order) {
+        if (order == ByteOrder.BIG_ENDIAN) {
             return (short) ((src[off] << 8) | (src[1 + off] & 0xFF));
         } else {
             return (short) ((src[1 + off] << 8) | (src[off] & 0xFF));
@@ -130,19 +173,19 @@ public final class ByteUtils {
     }
 
     public static int getUint16(byte[] src, int off) {
-        return getUint16(src, off, DEFAULT_ENDIAN);
+        return getUint16(src, off, ByteOrder.nativeOrder());
     }
 
-    public static int getUint16(byte[] src, int off, Endian endian) {
-        return getInt16(src, off, endian) & 0xFFFF;
+    public static int getUint16(byte[] src, int off, ByteOrder order) {
+        return getInt16(src, off, order) & 0xFFFF;
     }
 
     public static int getInt32(byte[] src, int off) {
-        return getInt32(src, off, DEFAULT_ENDIAN);
+        return getInt32(src, off, ByteOrder.nativeOrder());
     }
 
-    public static int getInt32(byte[] src, int off, Endian endian) {
-        if (endian == Endian.LITTLE) {
+    public static int getInt32(byte[] src, int off, ByteOrder order) {
+        if (order == ByteOrder.LITTLE_ENDIAN) {
             return ((src[3 + off] & 0xFF) << 24)
                     | ((src[2 + off] & 0xFF) << 16)
                     | ((src[1 + off] & 0xFF) << 8)
@@ -156,11 +199,11 @@ public final class ByteUtils {
     }
 
     public static long getUint32(byte[] src, int off) {
-        return getInt32(src, off, DEFAULT_ENDIAN);
+        return getInt32(src, off, ByteOrder.nativeOrder());
     }
 
-    public static long getUint32(byte[] src, int off, Endian endian) {
-        return getInt32(src, off, endian) & 0xFFFFFFFFL;
+    public static long getUint32(byte[] src, int off, ByteOrder order) {
+        return getInt32(src, off, order) & 0xFFFFFFFFL;
     }
 
     // for Java platform conversion
@@ -178,19 +221,19 @@ public final class ByteUtils {
     }
 
     public static byte[] putShort(short x) {
-        return putInt16(x, DEFAULT_ENDIAN);
+        return putInt16(x, ByteOrder.nativeOrder());
     }
 
     public static short getShort(byte[] src, int off) {
-        return getInt16(src, off, DEFAULT_ENDIAN);
+        return getInt16(src, off, ByteOrder.nativeOrder());
     }
 
     public static byte[] putInt(int x) {
-        return putInt32(x, DEFAULT_ENDIAN);
+        return putInt32(x, ByteOrder.nativeOrder());
     }
 
     public static int getInt(byte[] src, int off) {
-        return getInt32(src, off, DEFAULT_ENDIAN);
+        return getInt32(src, off, ByteOrder.nativeOrder());
     }
 
     public static byte[] putLong(long x) {
