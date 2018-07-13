@@ -43,11 +43,11 @@ public final class ByteUtils {
         var sum = 0L;
         if (order == ByteOrder.LITTLE_ENDIAN) {
             for (int i = from; i <= to; i++) {
-                sum += value(src[i], 0, 7) * FACTORS[i - from];
+                sum += value(src[i], 0, 8) * FACTORS[i - from];
             }
         } else {
             for (int i = from; i <= to; i++) {
-                sum += value(src[i], 0, 7) * FACTORS[to - i];
+                sum += value(src[i], 0, 8) * FACTORS[to - i];
             }
         }
         return sum;
