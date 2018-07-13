@@ -13,12 +13,12 @@ public final class ByteUtils {
     }
 
     public static int value(byte b, int off, int len) {
-        var mark = 1;
-        val end = off + len - 1;
-        for (int i = end - 1; i >= off; --i) {
-            mark |= 2 << i;
+        var mark = 0;
+        val end = off + len;
+        for (int i = off; i < end; ++i) {
+            mark |= 1 << (7 - i);
         }
-        return b >> 7 - end & mark;
+        return (b & mark) >> (8 - end);
     }
 
     public static long value(byte[] src, int off, int len) {
