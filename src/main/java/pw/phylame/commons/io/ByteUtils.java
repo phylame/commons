@@ -13,12 +13,12 @@ public final class ByteUtils {
     }
 
     public static int value(byte b, int off, int len) {
-        var mark = 1;
-        val end = off + len - 1;
-        for (int i = end - 1; i >= off; --i) {
-            mark |= 2 << i;
+        var mark = 0;
+        val end = off + len;
+        for (int i = off; i < end; ++i) {
+            mark |= 1 << (7 - i);
         }
-        return b >> 7 - end & mark;
+        return (b & mark) >> (8 - end);
     }
 
     public static long value(byte[] src, int off, int len) {
@@ -32,23 +32,22 @@ public final class ByteUtils {
             return 0L;
         }
 
-        val to = off + len - 1;
+        val end = off + len - 1;
+        val from = off >> 3;
+        val to = end >> 3;
 
-        val begin = off >> 3;
-        val end = to >> 3;
-
-        if (begin == end) {
-            return value(src[begin], off % 8, to % 8);
+        if (from == to) {
+            return value(src[from], off % 8, end % 8);
         }
 
         var sum = 0L;
         if (order == ByteOrder.LITTLE_ENDIAN) {
-            for (int i = begin; i <= end; i++) {
-                sum += value(src[i], 0, 8) * FACTORS[i - begin];
+            for (int i = from; i <= to; i++) {
+                sum += value(src[i], 0, 8) * FACTORS[i - from];
             }
         } else {
-            for (int i = begin; i <= end; i++) {
-                sum += value(src[i], 0, 8) * FACTORS[end - i];
+            for (int i = from; i <= to; i++) {
+                sum += value(src[i], 0, 8) * FACTORS[to - i];
             }
         }
         return sum;
