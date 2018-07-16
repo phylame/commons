@@ -29,8 +29,4 @@ public final class Reflections {
     public static String packagePath(Class<?> clazz) {
         return clazz.getPackage().getName().replace('.', '/');
     }
-
-    public static String resourcePath(Class<?> clazz, String name) {
-        return packagePath(clazz) + '/' + name;
-    }
 }
