@@ -1,15 +1,15 @@
-package pw.phylame.commons.value;
+package pw.phylame.commons;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
-import pw.phylame.commons.NestedException;
-import pw.phylame.commons.Validate;
 import pw.phylame.commons.io.FilenameUtils;
 import pw.phylame.commons.io.Resources;
 import pw.phylame.commons.text.StringUtils;
 import pw.phylame.commons.text.Texts;
+import pw.phylame.commons.value.Lazy;
+import pw.phylame.commons.value.Value;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -129,7 +129,7 @@ public final class TypeMapping {
     }
 
     public void registerBuiltins() {
-        val props = Resources.getProperties(TypeMapping.class.getName() + ".types.properties");
+        val props = Resources.getProperties(TypeMapping.class, "types.properties");
         if (props != null) {
             for (val e : props.entrySet()) {
                 val name = e.getKey().toString().trim();

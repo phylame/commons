@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = '5.0.2'
+version = '5.0.3'
 group = 'pw.phylame.util'
 sourceCompatibility = 1.8
 
