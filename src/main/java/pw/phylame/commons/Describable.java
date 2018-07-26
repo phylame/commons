@@ -8,4 +8,8 @@ public interface Describable {
     default String getDescription() {
         return "";
     }
+
+    default String getVendor() {
+        return "";
+    }
 }
