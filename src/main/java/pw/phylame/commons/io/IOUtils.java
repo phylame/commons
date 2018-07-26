@@ -113,10 +113,26 @@ public final class IOUtils {
                 : (BufferedReader) reader;
     }
 
+    public static BufferedReader bufferedReader(InputStream input) {
+        return bufferedReader(input, defaultCharset());
+    }
+
+    public static BufferedReader bufferedReader(InputStream input, Charset charset) {
+        return new BufferedReader(new InputStreamReader(input, charset));
+    }
+
     public static BufferedWriter buffered(Writer writer) {
         return !(writer instanceof BufferedWriter)
                 ? new BufferedWriter(writer, DEFAULT_BUFFER_SIZE)
                 : (BufferedWriter) writer;
+    }
+
+    public static BufferedWriter bufferedWriter(OutputStream output) {
+        return bufferedWriter(output, defaultCharset());
+    }
+
+    public static BufferedWriter bufferedWriter(OutputStream output, Charset charset) {
+        return new BufferedWriter(new OutputStreamWriter(output, charset));
     }
 
     public static long copy(@NonNull Reader input, @NonNull Writer output, long size) throws IOException {
