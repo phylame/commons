@@ -64,10 +64,6 @@ public final class Resources {
         return null;
     }
 
-    public static String resourcePath(Class<?> clazz, String name) {
-        return Reflections.packagePath(clazz) + '/' + name;
-    }
-
     public static Lazy<Properties> lazyProperties(String uri) {
         return lazyProperties(uri, null, true);
     }
@@ -83,7 +79,7 @@ public final class Resources {
     }
 
     public static Lazy<Properties> lazyProperties(Class<?> clazz, String name) {
-        return lazyProperties("!" + resourcePath(clazz, name), clazz.getClassLoader(), true);
+        return lazyProperties("!" + Reflections.resolvePath(clazz, name), clazz.getClassLoader(), true);
     }
 
     public static Properties getProperties(String uri) {
@@ -102,7 +98,7 @@ public final class Resources {
     }
 
     public static Properties getProperties(Class<?> clazz, String name) {
-        return getProperties("!" + resourcePath(clazz, name), clazz.getClassLoader(), true);
+        return getProperties("!" + Reflections.resolvePath(clazz, name), clazz.getClassLoader(), true);
     }
 
     public static Resource of(byte[] data, String name) {
