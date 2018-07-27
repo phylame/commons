@@ -31,6 +31,9 @@ public final class Reflections {
     }
 
     public static String resolvePath(Class<?> clazz, String name) {
-        return packagePath(clazz) + '/' + name;
+        val path = packagePath(clazz);
+        return !path.isEmpty()
+                ? path + '/' + name
+                : name;
     }
 }
