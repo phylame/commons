@@ -12,7 +12,7 @@ import java.util.Iterator;
  * @date 2018/05/18
  */
 @RequiredArgsConstructor
-public class TextWrapper implements Text {
+public abstract class TextWrapper implements Text {
     @NonNull
     private final Text text;
 

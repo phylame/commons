@@ -10,7 +10,7 @@ import java.util.MissingResourceException;
  * @author wp <phylame@163.com>
  * @date 2018/07/27
  */
-public class TranslatorWrapper implements Translator {
+public abstract class TranslatorWrapper implements Translator {
     @Getter
     @Setter
     private Translator translator;

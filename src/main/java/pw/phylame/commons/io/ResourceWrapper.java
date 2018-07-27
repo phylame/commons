@@ -11,7 +11,7 @@ import java.io.InputStream;
  * @date 2018/06/08
  */
 @RequiredArgsConstructor
-public class ResourceWrapper implements Resource {
+public abstract class ResourceWrapper implements Resource {
     @NonNull
     private final Resource resource;
 
