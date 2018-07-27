@@ -17,7 +17,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 
 /**
  * @author wp <phylame@163.com>
@@ -25,6 +28,10 @@ import java.util.Properties;
  */
 public final class Resources {
     public static final String PREFIX = "!";
+
+    public static String resourcePath(Class<?> clazz, String name) {
+        return PREFIX + Reflections.resolvePath(clazz, name);
+    }
 
     public static URL locate(String uri) {
         return locate(uri, null);
@@ -54,6 +61,10 @@ public final class Resources {
         return open(uri, null, true);
     }
 
+    public static InputStream open(String uri, ClassLoader loader) throws IOException {
+        return open(uri, loader, true);
+    }
+
     public static InputStream open(String uri, ClassLoader loader, boolean useCache) throws IOException {
         val url = locate(uri, loader);
         if (url != null) {
@@ -64,12 +75,12 @@ public final class Resources {
         return null;
     }
 
-    public static String resourcePath(Class<?> clazz, String name) {
-        return PREFIX + Reflections.resolvePath(clazz, name);
-    }
-
     public static Lazy<Properties> lazyProperties(String uri) {
         return lazyProperties(uri, null, true);
+    }
+
+    public static Lazy<Properties> lazyProperties(String uri, ClassLoader loader) {
+        return lazyProperties(uri, loader, true);
     }
 
     public static Lazy<Properties> lazyProperties(String uri, ClassLoader loader, boolean useCache) {
@@ -90,6 +101,10 @@ public final class Resources {
         return getProperties(uri, null, true);
     }
 
+    public static Properties getProperties(String uri, ClassLoader loader) {
+        return getProperties(uri, loader, true);
+    }
+
     @SneakyThrows(IOException.class)
     public static Properties getProperties(String uri, ClassLoader loader, boolean useCache) {
         val input = open(uri, loader, useCache);
@@ -103,6 +118,18 @@ public final class Resources {
 
     public static Properties getProperties(Class<?> clazz, String name) {
         return getProperties(resourcePath(clazz, name), clazz.getClassLoader(), true);
+    }
+
+    public static ResourceBundle getResourceBundle(String name) {
+        return ResourceBundle.getBundle(name, ResourceControl.INSTANCE);
+    }
+
+    public static ResourceBundle getResourceBundle(String name, Locale locale) {
+        return ResourceBundle.getBundle(name, locale, ResourceControl.INSTANCE);
+    }
+
+    public static ResourceBundle getResourceBundle(String name, Locale locale, ClassLoader loader) {
+        return ResourceBundle.getBundle(name, locale, loader, ResourceControl.INSTANCE);
     }
 
     public static Resource of(byte[] data, String name) {
@@ -179,5 +206,26 @@ public final class Resources {
 
     public static Resource of(VdmReader reader, VdmEntry entry, String mime) {
         return new VdmResource(reader, entry, mime);
+    }
+
+    private static class ResourceControl extends ResourceBundle.Control {
+        private static final ResourceControl INSTANCE = new ResourceControl();
+
+        @Override
+        public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload) throws IllegalAccessException, InstantiationException, IOException {
+            if (format.equals("java.properties")) {
+                val stream = open(toBundleName(baseName, locale), loader, !reload);
+                if (stream != null) {
+                    try {
+                        return new PropertyResourceBundle(stream);
+                    } finally {
+                        stream.close();
+                    }
+                }
+                return null;
+            } else {
+                return super.newBundle(baseName, locale, format, loader, reload);
+            }
+        }
     }
 }
