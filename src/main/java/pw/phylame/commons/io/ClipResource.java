@@ -70,7 +70,7 @@ public class ClipResource extends AbstractResource implements Disposable {
     }
 
     @Override
-    public void close() {
+    public void close() throws Exception {
         support.close();
     }
 }
