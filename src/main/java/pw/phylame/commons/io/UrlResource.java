@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.val;
 import pw.phylame.commons.text.StringUtils;
 import pw.phylame.commons.value.Lazy;
+import pw.phylame.commons.value.Value;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +22,7 @@ class UrlResource implements Resource {
     @Getter
     private final String name;
 
-    private volatile String contentType;
+    private final Value<String> contentType;
 
     private final Lazy<Long> contentLength = Lazy.of(() -> {
         try {
@@ -34,28 +35,27 @@ class UrlResource implements Resource {
     UrlResource(@NonNull URL url, String name, String contentType) {
         this.url = url;
         this.name = StringUtils.isNotEmpty(name) ? name : StringUtils.partition(url.toString(), "?").getFirst();
-        this.contentType = contentType;
-    }
-
-    @Override
-    public String getContentType() {
-        if (contentType == null) {
-            synchronized (this) {
-                if (contentType == null) {
-                    try {
-                        contentType = openConnection().getContentType();
-                    } catch (IOException e) {
-                        contentType = FilenameUtils.UNKNOWN_MIME_TYPE;
-                    }
+        if (contentType != null) {
+            this.contentType = Value.of(contentType);
+        } else {
+            this.contentType = Lazy.of(() -> {
+                try {
+                    return openConnection().getContentType();
+                } catch (IOException e) {
+                    return FilenameUtils.UNKNOWN_MIME_TYPE;
                 }
-            }
+            });
         }
-        return contentType;
     }
 
     @Override
     public long size() {
         return contentLength.get();
+    }
+
+    @Override
+    public String getContentType() {
+        return contentType.get();
     }
 
     @Override

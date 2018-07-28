@@ -14,7 +14,7 @@ public class ClipResource extends AbstractResource implements Disposable {
     @Getter
     private final String name;
 
-    private final DisposableWrapper<RandomAccessFile> ref;
+    private final DisposableWrapper<RandomAccessFile> file;
 
     private final long offset;
 
@@ -23,17 +23,17 @@ public class ClipResource extends AbstractResource implements Disposable {
     private final DisposableSupport support = new DisposableSupport() {
         @Override
         public void close() {
-            Disposables.release(ref);
+            Disposables.release(file);
         }
     };
 
-    public ClipResource(String name, @NonNull DisposableWrapper<RandomAccessFile> ref, long offset, long length, String mime) throws IOException {
+    public ClipResource(String name, @NonNull DisposableWrapper<RandomAccessFile> file, long offset, long length, String mime) throws IOException {
         super(mime);
+        Validate.require(offset + length <= file.getSource().length(), "Invalid offset or length");
         this.name = name;
         this.offset = offset;
         this.length = length;
-        this.ref = Disposables.retain(ref);
-        Validate.require(offset + length <= ref.getSource().length(), "Invalid offset or length");
+        this.file = Disposables.retain(file);
     }
 
     @Override
@@ -43,13 +43,13 @@ public class ClipResource extends AbstractResource implements Disposable {
 
     @Override
     public InputStream openStream() throws IOException {
-        ref.getSource().seek(offset);
-        return new RandomAccessFileInputStream(ref.getSource(), offset, length);
+        file.getSource().seek(offset);
+        return new RandomAccessFileInputStream(file.getSource(), offset, length);
     }
 
     @Override
     public void transferTo(ByteSink output) throws IOException {
-        val raf = ref.getSource();
+        val raf = file.getSource();
         raf.seek(offset);
         IOUtils.copy(ByteSource.of(raf), output, length);
     }
@@ -70,7 +70,7 @@ public class ClipResource extends AbstractResource implements Disposable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         support.close();
     }
 }

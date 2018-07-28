@@ -2,11 +2,11 @@ package pw.phylame.commons.io;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.val;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -26,15 +26,18 @@ public final class LineIterator implements Iterator<String> {
     private boolean isDone;
 
     @Override
-    @SneakyThrows(IOException.class)
     public boolean hasNext() {
         if (nextLine == null && !isDone) {
-            nextLine = reader.readLine();
-            if (nextLine == null) {
-                isDone = true;
-                if (autoClose) {
-                    reader.close();
+            try {
+                nextLine = reader.readLine();
+                if (nextLine == null) {
+                    isDone = true;
+                    if (autoClose) {
+                        reader.close();
+                    }
                 }
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
         return nextLine != null;

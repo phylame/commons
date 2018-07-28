@@ -1,5 +1,6 @@
 package pw.phylame.commons.io;
 
+import lombok.NonNull;
 import lombok.val;
 
 import java.io.IOException;
@@ -8,10 +9,6 @@ import java.io.OutputStream;
 import java.util.zip.*;
 
 public final class ZlibUtils {
-    private static boolean isEmpty(byte[] b) {
-        return b == null || b.length == 0;
-    }
-
     /**
      * Compresses specified byte data with default compression level.
      *
@@ -26,7 +23,7 @@ public final class ZlibUtils {
      * Compresses specified input data with specified compression level.
      *
      * @param data  the input byte data to be compressed
-     * @param level ZLIB compression level
+     * @param level zlib compression level
      * @return compressed data
      */
     public static byte[] compress(byte[] data, int level) {
@@ -51,11 +48,11 @@ public final class ZlibUtils {
      * @param data   the input byte data
      * @param offset start index of compressing area
      * @param length length of compressing area
-     * @param level  ZLIB compression level
+     * @param level  zlib compression level
      * @return compressed data
      */
-    public static byte[] compress(byte[] data, int offset, int length, int level) {
-        if (isEmpty(data)) {
+    public static byte[] compress(@NonNull byte[] data, int offset, int length, int level) {
+        if (data.length == 0) {
             return data;
         }
 
@@ -63,9 +60,9 @@ public final class ZlibUtils {
         deflater.setInput(data, offset, length);
 
         val output = new ByteBuilder(length);
-        val buf = new byte[IOUtils.DEFAULT_BUFFER_SIZE];
+        val buffer = new byte[IOUtils.DEFAULT_BUFFER_SIZE];
         while (!deflater.finished()) {
-            output.write(buf, 0, deflater.deflate(buf));
+            output.write(buffer, 0, deflater.deflate(buffer));
         }
         deflater.end();
 
@@ -121,8 +118,8 @@ public final class ZlibUtils {
      * @return decompressed data
      * @throws DataFormatException if the compressed data format is invalid
      */
-    public static byte[] decompress(byte[] data, int offset, int length) throws DataFormatException {
-        if (isEmpty(data)) {
+    public static byte[] decompress(@NonNull byte[] data, int offset, int length) throws DataFormatException {
+        if (data.length == 0) {
             return data;
         }
 
@@ -130,9 +127,9 @@ public final class ZlibUtils {
         inflater.setInput(data, offset, length);
 
         val output = new ByteBuilder(length);
-        byte[] buf = new byte[IOUtils.DEFAULT_BUFFER_SIZE];
+        val buffer = new byte[IOUtils.DEFAULT_BUFFER_SIZE];
         while (!inflater.finished()) {
-            output.write(buf, 0, inflater.inflate(buf));
+            output.write(buffer, 0, inflater.inflate(buffer));
         }
         inflater.end();
 
@@ -150,11 +147,11 @@ public final class ZlibUtils {
         val iis = new InflaterInputStream(input);
 
         val output = new ByteBuilder();
-        val buf = new byte[IOUtils.DEFAULT_BUFFER_SIZE];
+        val buffer = new byte[IOUtils.DEFAULT_BUFFER_SIZE];
 
-        int n;
-        while ((n = iis.read(buf)) > 0) {
-            output.write(buf, 0, n);
+        int bytes;
+        while ((bytes = iis.read(buffer)) > 0) {
+            output.write(buffer, 0, bytes);
         }
 
         return output.getRawArray();

@@ -16,7 +16,7 @@ import java.util.Properties;
  * @date 2018/06/2018
  */
 @Slf4j
-public class MapFileTypeDetector extends FileTypeDetector {
+public final class MapFileTypeDetector extends FileTypeDetector {
     private static final String MIME_TYPE_FILE_NAME = "mime.properties";
 
     private final HashMap<String, String> mimeMap = new HashMap<>();

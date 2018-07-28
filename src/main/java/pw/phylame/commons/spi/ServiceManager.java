@@ -21,11 +21,11 @@ import java.util.ServiceLoader;
 public class ServiceManager<T extends KeyedService> {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private ServiceLoader<T> serviceLoader;
+    private final HashMap<String, T> registry = new HashMap<>();
 
     private final HashSet<T> services = new HashSet<>();
 
-    private final HashMap<String, T> registry = new HashMap<>();
+    private ServiceLoader<T> serviceLoader;
 
     private boolean loaded = false;
 

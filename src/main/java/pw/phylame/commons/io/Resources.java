@@ -1,7 +1,6 @@
 package pw.phylame.commons.io;
 
 import lombok.NonNull;
-import lombok.SneakyThrows;
 import lombok.val;
 import pw.phylame.commons.Reflections;
 import pw.phylame.commons.Validate;
@@ -12,9 +11,11 @@ import pw.phylame.commons.vdm.VdmReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
@@ -27,11 +28,7 @@ import java.util.ResourceBundle;
  * @date 2018/06/08
  */
 public final class Resources {
-    public static final String PREFIX = "!";
-
-    public static String resourcePath(Class<?> clazz, String name) {
-        return PREFIX + Reflections.resolvePath(clazz, name);
-    }
+    public static final String CLASSPATH_PREFIX = "!";
 
     public static URL locate(String uri) {
         return locate(uri, null);
@@ -39,16 +36,12 @@ public final class Resources {
 
     public static URL locate(String uri, ClassLoader loader) {
         Validate.nonEmpty(uri, "`uri` cannot be empty");
-        if (uri.startsWith(PREFIX)) {
-            return (loader != null ? loader : Reflections.currentClassLoader()).getResource(uri.substring(PREFIX.length()));
+        if (uri.startsWith(CLASSPATH_PREFIX)) {
+            return (loader != null ? loader : Reflections.currentClassLoader()).getResource(uri.substring(CLASSPATH_PREFIX.length()));
         }
-        val path = Paths.get(uri);
-        if (Files.exists(path)) {
-            try {
-                return path.toUri().toURL();
-            } catch (MalformedURLException e) {
-                throw new InternalError();
-            }
+        try {
+            return Paths.get(uri).toUri().toURL();
+        } catch (InvalidPathException | MalformedURLException ignored) {
         }
         try {
             return new URL(uri);
@@ -73,6 +66,10 @@ public final class Resources {
             return conn.getInputStream();
         }
         return null;
+    }
+
+    public static String resourcePath(Class<?> clazz, String name) {
+        return CLASSPATH_PREFIX + Reflections.resolvePath(clazz, name);
     }
 
     public static Lazy<Properties> lazyProperties(String uri) {
@@ -105,13 +102,16 @@ public final class Resources {
         return getProperties(uri, loader, true);
     }
 
-    @SneakyThrows(IOException.class)
     public static Properties getProperties(String uri, ClassLoader loader, boolean useCache) {
-        val input = open(uri, loader, useCache);
-        if (input != null) {
-            val props = new Properties();
-            props.load(input);
-            return props;
+        try {
+            val input = open(uri, loader, useCache);
+            if (input != null) {
+                val props = new Properties();
+                props.load(input);
+                return props;
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
         return null;
     }

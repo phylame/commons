@@ -1,13 +1,13 @@
 package pw.phylame.commons.io;
 
 import lombok.NonNull;
-import lombok.SneakyThrows;
 import lombok.val;
 import pw.phylame.commons.text.StringUtils;
 import pw.phylame.commons.value.Pair;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
@@ -19,9 +19,12 @@ import java.text.NumberFormat;
 public final class FilenameUtils {
     public static final String UNKNOWN_MIME_TYPE = "application/octet-stream";
 
-    @SneakyThrows(IOException.class)
     public static String normalized(String path) {
-        return new File(path).getCanonicalPath();
+        try {
+            return new File(path).getCanonicalPath();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public static String slashified(@NonNull String path) {
@@ -84,9 +87,12 @@ public final class FilenameUtils {
         return index != path.length() ? path.substring(index + 1) : "";
     }
 
-    @SneakyThrows(IOException.class)
     public static String mimeType(String path) {
-        return Files.probeContentType(Paths.get(fullName(path)));
+        try {
+            return Files.probeContentType(Paths.get(fullName(path)));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public static String detectMime(String mime, String path) {

@@ -206,7 +206,9 @@ public final class ByteUtils {
         return getInt32(src, off, order) & 0xFFFFFFFFL;
     }
 
-    // for Java platform conversion
+    /******************************************
+     *        Java platform conversion        *
+     ******************************************/
 
     public static int getUbyte(byte n) {
         return n & 0xFF;

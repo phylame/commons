@@ -3,20 +3,22 @@ plugins {
     id 'maven-publish'
 }
 
-version = '5.0.4'
+version = '5.0.5'
 group = 'pw.phylame.util'
 sourceCompatibility = 1.8
+
+dependencies {
+    api 'org.slf4j:slf4j-api:1.7+'
+    implementation 'xpp3:xpp3:1.1.+'
+    compileOnly 'org.projectlombok:lombok:1.18.+'
+}
 
 repositories {
     jcenter()
 }
 
-dependencies {
-    api 'org.slf4j:slf4j-api:1.7+'
-    implementation 'xpp3:xpp3:1.1.+'
-    compileOnly 'org.projectlombok:lombok:+'
-
-    testImplementation 'junit:junit:4.12'
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
 }
 
 publishing {
@@ -29,8 +31,4 @@ publishing {
             }
         }
     }
-}
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
 }

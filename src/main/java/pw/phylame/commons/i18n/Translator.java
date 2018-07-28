@@ -26,9 +26,9 @@ public interface Translator {
     }
 
     default String optTr(String key, String nullDefault, Object... args) {
-        val msg = optTr(key, nullDefault);
-        return StringUtils.isNotEmpty(msg)
-                ? MessageFormat.format(msg, args)
-                : msg;
+        val text = optTr(key, nullDefault);
+        return StringUtils.isNotEmpty(text)
+                ? MessageFormat.format(text, args)
+                : text;
     }
 }

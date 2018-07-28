@@ -15,6 +15,7 @@ import java.time.LocalTime;
 import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author wp <phylame@163.com>
@@ -31,25 +32,27 @@ public final class FormatterService {
         return INSTANCE.get();
     }
 
-    private final IdentityHashMap<Class<?>, Formatter<?>> formatters = new IdentityHashMap<>();
+    private final Map<Class<?>, Formatter<?>> registry = new IdentityHashMap<>();
 
     public <T extends Enum<T>> void register(@NonNull Class<T> enumType) {
         register(enumType, new DefaultFormatter<>(enumType));
     }
 
     public <T> void register(@NonNull Class<T> type, @NonNull Formatter<T> formatter) {
-        formatters.put(type, formatter);
+        registry.put(type, formatter);
     }
 
-    public void remove(Class<?> type) {
+    public void unregister(Class<?> type) {
         if (type != null) {
-            formatters.remove(type);
+            registry.remove(type);
         }
     }
 
     @SuppressWarnings("unchecked")
     public String render(@NonNull Object obj) {
-        return !(obj instanceof CharSequence) ? render(obj, (Class<Object>) obj.getClass()) : obj.toString();
+        return !(obj instanceof CharSequence)
+                ? render(obj, (Class<Object>) obj.getClass())
+                : obj.toString();
     }
 
     @SuppressWarnings("unchecked")
@@ -58,7 +61,7 @@ public final class FormatterService {
         if (CharSequence.class.isAssignableFrom(type)) {
             return obj.toString();
         }
-        val formatter = (Formatter<T>) formatters.get(type);
+        val formatter = (Formatter<T>) registry.get(type);
         if (formatter != null) {
             val str = formatter.render(obj);
             if (str == null) {
@@ -75,7 +78,7 @@ public final class FormatterService {
         if (CharSequence.class.isAssignableFrom(type)) {
             return (T) str;
         }
-        val formatter = (Formatter<T>) formatters.get(type);
+        val formatter = (Formatter<T>) registry.get(type);
         if (formatter != null) {
             val obj = formatter.parse(str);
             if (obj == null) {

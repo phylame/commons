@@ -1,13 +1,13 @@
 package pw.phylame.commons.text;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import pw.phylame.commons.Validate;
 import pw.phylame.commons.io.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 
@@ -68,18 +68,20 @@ public final class Texts {
         }
 
         @Override
-        @SneakyThrows(IOException.class)
         public String toString() {
             try (val reader = openReader()) {
                 return IOUtils.toString(reader);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
 
         @Override
-        @SneakyThrows(IOException.class)
         public Iterator<String> iterator() {
             try (val reader = openReader()) {
                 return new LineIterator(reader, true);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
 

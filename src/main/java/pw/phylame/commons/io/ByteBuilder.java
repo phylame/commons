@@ -6,7 +6,7 @@ import lombok.SneakyThrows;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class ByteBuilder extends ByteArrayOutputStream {
+public final class ByteBuilder extends ByteArrayOutputStream {
     public ByteBuilder() {
         super();
     }
@@ -15,8 +15,8 @@ public class ByteBuilder extends ByteArrayOutputStream {
         super(size);
     }
 
-    public ByteBuilder(@NonNull byte[] buf) {
-        this.buf = buf;
+    public ByteBuilder(@NonNull byte[] src) {
+        this.buf = src;
     }
 
     public ByteBuilder append(int b) {
