@@ -19,9 +19,9 @@ import static pw.phylame.commons.text.StringUtils.isNotEmpty;
  */
 @RequiredArgsConstructor
 public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, Cloneable {
-    private final BiFunction<String, Object, Object> validator;
+    private final BiFunction<String, Object, Object> filter;
 
-    private HashMap<String, Object> values = new HashMap<>();
+    private HashMap<String, Object> map = new HashMap<>();
 
     public AttributeMap() {
         this(null);
@@ -29,11 +29,11 @@ public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, 
 
     public Object set(String name, @NonNull Object value) {
         nonEmpty(name, "`name` cannot be empty");
-        if (validator != null) {
-            value = validator.apply(name, value);
+        if (filter != null) {
+            value = filter.apply(name, value);
         }
-        val last = values.get(name);
-        values.put(name, Disposables.retain(value));
+        val last = map.get(name);
+        map.put(name, Disposables.retain(value));
         Disposables.release(last);
         return last;
     }
@@ -45,32 +45,32 @@ public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, 
     }
 
     public void update(@NonNull AttributeMap am) {
-        update(am.values);
+        update(am.map);
     }
 
     public int size() {
-        return values.size();
+        return map.size();
     }
 
     public boolean isEmpty() {
-        return values.isEmpty();
+        return map.isEmpty();
     }
 
     public Set<String> names() {
-        return values.keySet();
+        return map.keySet();
     }
 
     public boolean contains(String name) {
-        return isNotEmpty(name) && values.containsKey(name);
+        return isNotEmpty(name) && map.containsKey(name);
     }
 
     public Object get(String name) {
-        return isNotEmpty(name) ? values.get(name) : null;
+        return isNotEmpty(name) ? map.get(name) : null;
     }
 
     public Object remove(String name) {
         if (isNotEmpty(name)) {
-            val last = values.remove(name);
+            val last = map.remove(name);
             Disposables.release(last);
             return last;
         }
@@ -78,22 +78,22 @@ public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, 
     }
 
     public void clear() {
-        Disposables.releaseAll(values.values());
-        values.clear();
+        Disposables.releaseAll(map.values());
+        map.clear();
     }
 
     @Override
     public String toString() {
-        return values.toString();
+        return map.toString();
     }
 
     @Override
     public Iterator<Map.Entry<String, Object>> iterator() {
-        return Collections.unmodifiableMap(values).entrySet().iterator();
+        return Collections.unmodifiableMap(map).entrySet().iterator();
     }
 
     public Stream<Map.Entry<String, Object>> stream() {
-        return values.entrySet().stream();
+        return map.entrySet().stream();
     }
 
     @Override
@@ -101,8 +101,8 @@ public final class AttributeMap implements Iterable<Map.Entry<String, Object>>, 
     @SneakyThrows(CloneNotSupportedException.class)
     public AttributeMap clone() {
         val am = (AttributeMap) super.clone();
-        am.values = (HashMap<String, Object>) values.clone();
-        Disposables.retainAll(am.values.values());
+        am.map = (HashMap<String, Object>) map.clone();
+        Disposables.retainAll(am.map.values());
         return am;
     }
 }

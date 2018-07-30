@@ -1,5 +1,6 @@
 package pw.phylame.commons.i18n;
 
+import lombok.NonNull;
 import lombok.val;
 import pw.phylame.commons.text.StringUtils;
 
@@ -13,11 +14,11 @@ import java.util.MissingResourceException;
 public interface Translator {
     String tr(String key) throws MissingResourceException;
 
-    default String tr(String key, Object... args) throws MissingResourceException {
+    default String tr(@NonNull String key, Object... args) throws MissingResourceException {
         return MessageFormat.format(tr(key), args);
     }
 
-    default String optTr(String key, String nullDefault) {
+    default String optTr(@NonNull String key, String nullDefault) {
         try {
             return tr(key);
         } catch (MissingResourceException e) {
@@ -25,10 +26,8 @@ public interface Translator {
         }
     }
 
-    default String optTr(String key, String nullDefault, Object... args) {
+    default String optTr(@NonNull String key, String nullDefault, Object... args) {
         val text = optTr(key, nullDefault);
-        return StringUtils.isNotEmpty(text)
-                ? MessageFormat.format(text, args)
-                : text;
+        return StringUtils.isNotEmpty(text) ? MessageFormat.format(text, args) : text;
     }
 }

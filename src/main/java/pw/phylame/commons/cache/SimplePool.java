@@ -10,7 +10,7 @@ public class SimplePool<T> implements Pool<T> {
     private int size;
 
     public SimplePool(int capacity) {
-        Validate.require(capacity > 0, "The capacity must be > 0");
+        Validate.require(capacity >= 0, "The capacity must be >= 0");
         pool = new Object[capacity];
     }
 
@@ -18,9 +18,9 @@ public class SimplePool<T> implements Pool<T> {
     @SuppressWarnings("unchecked")
     public T acquire() {
         if (size > 0) {
-            val lastIndex = --size;
-            T instance = (T) pool[lastIndex];
-            pool[lastIndex] = null;
+            val index = --size;
+            val instance = (T) pool[index];
+            pool[index] = null;
             return instance;
         }
         return null;
@@ -28,8 +28,8 @@ public class SimplePool<T> implements Pool<T> {
 
     @Override
     public boolean release(@NonNull T instance) {
-        if (isInPool(instance)) {
-            throw new IllegalStateException("Already in the pool!");
+        if (contains(instance)) {
+            throw new IllegalStateException("Already in the pool");
         }
         if (size < pool.length) {
             pool[size++] = instance;
@@ -38,7 +38,7 @@ public class SimplePool<T> implements Pool<T> {
         return false;
     }
 
-    private boolean isInPool(T instance) {
+    private boolean contains(T instance) {
         for (int i = 0; i < size; i++) {
             if (pool[i] == instance) {
                 return true;

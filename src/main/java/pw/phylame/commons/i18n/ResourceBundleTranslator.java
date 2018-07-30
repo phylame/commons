@@ -33,7 +33,7 @@ public class ResourceBundleTranslator implements Translator {
     }
 
     @Override
-    public String tr(String key) throws MissingResourceException {
+    public String tr(@NonNull String key) throws MissingResourceException {
         return resourceBundle.getString(key);
     }
 }

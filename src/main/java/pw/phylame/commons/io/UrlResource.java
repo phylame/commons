@@ -16,7 +16,7 @@ import java.net.URLConnection;
  * @author wp <phylame@163.com>
  * @date 2018/06/2018
  */
-class UrlResource implements Resource {
+final class UrlResource implements Resource {
     private final URL url;
 
     @Getter
@@ -34,7 +34,7 @@ class UrlResource implements Resource {
 
     UrlResource(@NonNull URL url, String name, String contentType) {
         this.url = url;
-        this.name = StringUtils.isNotEmpty(name) ? name : StringUtils.partition(url.toString(), "?").getFirst();
+        this.name = StringUtils.isNotEmpty(name) ? name : StringUtils.getFirst(url.toString(), "?");
         if (contentType != null) {
             this.contentType = Value.of(contentType);
         } else {

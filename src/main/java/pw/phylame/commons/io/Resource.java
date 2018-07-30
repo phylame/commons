@@ -26,8 +26,7 @@ public interface Resource {
 
     InputStream openStream() throws IOException;
 
-    default void transferTo(ByteSink output) throws IOException {
-        Validate.nonNull(output);
+    default void transferTo(@NonNull ByteSink output) throws IOException {
         try (val input = openStream()) {
             IOUtils.copy(ByteSource.of(input), output, -1);
         }

@@ -64,5 +64,6 @@ public abstract class AsyncValue<T> implements Value<T> {
 
     public final void reset() {
         done = false;
+        future = null;
     }
 }

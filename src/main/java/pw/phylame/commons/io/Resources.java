@@ -62,6 +62,10 @@ public final class Resources {
         return null;
     }
 
+    public static InputStream open(Class<?> clazz, String name) throws IOException {
+        return open(resourcePath(clazz, name), clazz.getClassLoader(), true);
+    }
+
     public static String resourcePath(Class<?> clazz, String name) {
         return CLASSPATH_PREFIX + Reflections.resolvePath(clazz, name);
     }
@@ -114,16 +118,16 @@ public final class Resources {
         return getProperties(resourcePath(clazz, name), clazz.getClassLoader(), true);
     }
 
-    public static ResourceBundle getResourceBundle(String name) {
-        return ResourceBundle.getBundle(name, ResourceControl.INSTANCE);
+    public static ResourceBundle getResourceBundle(String uri) {
+        return ResourceBundle.getBundle(uri, ResourceControl.INSTANCE);
     }
 
-    public static ResourceBundle getResourceBundle(String name, Locale locale) {
-        return ResourceBundle.getBundle(name, locale, ResourceControl.INSTANCE);
+    public static ResourceBundle getResourceBundle(String uri, Locale locale) {
+        return ResourceBundle.getBundle(uri, locale, ResourceControl.INSTANCE);
     }
 
-    public static ResourceBundle getResourceBundle(String name, Locale locale, ClassLoader loader) {
-        return ResourceBundle.getBundle(name, locale, loader, ResourceControl.INSTANCE);
+    public static ResourceBundle getResourceBundle(String uri, Locale locale, ClassLoader loader) {
+        return ResourceBundle.getBundle(uri, locale, loader, ResourceControl.INSTANCE);
     }
 
     private static class ResourceControl extends ResourceBundle.Control {

@@ -10,4 +10,8 @@ public interface Disposable extends AutoCloseable {
     void retain() throws DisposedException;
 
     void release() throws NestedException;
+
+    static <C extends AutoCloseable> DisposableWrapper<C> of(C source) {
+        return new DisposableWrapper<>(source);
+    }
 }

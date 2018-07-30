@@ -33,15 +33,11 @@ public abstract class TranslatorWrapper implements Translator {
 
     @Override
     public String optTr(String key, String nullDefault) {
-        return translator != null
-                ? translator.optTr(key, nullDefault)
-                : nullDefault;
+        return translator != null ? translator.optTr(key, nullDefault) : nullDefault;
     }
 
     @Override
     public String optTr(String key, String nullDefault, Object... args) {
-        return translator != null
-                ? translator.optTr(key, nullDefault, args)
-                : MessageFormat.format(nullDefault, args);
+        return translator != null ? translator.optTr(key, nullDefault, args) : MessageFormat.format(nullDefault, args);
     }
 }

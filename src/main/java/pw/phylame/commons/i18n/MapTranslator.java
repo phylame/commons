@@ -20,7 +20,7 @@ public class MapTranslator implements Translator {
     private Map<String, String> map;
 
     @Override
-    public String tr(String key) throws MissingResourceException {
+    public String tr(@NonNull String key) throws MissingResourceException {
         return map.get(key);
     }
 }

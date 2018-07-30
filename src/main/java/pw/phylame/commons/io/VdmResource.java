@@ -12,13 +12,13 @@ import java.io.InputStream;
  * @author wp <phylame@163.com>
  * @date 2018/06/2018
  */
-class VdmResource extends DisposableSupport implements Resource {
+final class VdmResource extends DisposableSupport implements Resource {
+    @Getter
+    private final String contentType;
+
     private final VdmReader reader;
 
     private final VdmEntry entry;
-
-    @Getter
-    private final String contentType;
 
     VdmResource(@NonNull VdmReader reader, @NonNull VdmEntry entry, String mime) {
         this.entry = entry;

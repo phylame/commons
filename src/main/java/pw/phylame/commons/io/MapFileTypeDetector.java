@@ -3,6 +3,7 @@ package pw.phylame.commons.io;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import pw.phylame.commons.CollectionUtils;
+import pw.phylame.commons.Reflections;
 import pw.phylame.commons.text.StringUtils;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ public final class MapFileTypeDetector extends FileTypeDetector {
     private final HashMap<String, String> mimeMap = new HashMap<>();
 
     public MapFileTypeDetector() {
-        val path = getClass().getPackage().getName().replace('.', '/') + "/" + MIME_TYPE_FILE_NAME;
+        val path = Reflections.resolvePath(getClass(), MIME_TYPE_FILE_NAME);
         try {
             val urls = getClass().getClassLoader().getResources(path);
             while (urls.hasMoreElements()) {
@@ -42,8 +43,6 @@ public final class MapFileTypeDetector extends FileTypeDetector {
     @Override
     public String probeContentType(Path path) {
         val ext = FilenameUtils.extName(path.toString());
-        return StringUtils.isNotEmpty(ext)
-                ? mimeMap.get(ext)
-                : null;
+        return StringUtils.isNotEmpty(ext) ? mimeMap.get(ext) : null;
     }
 }

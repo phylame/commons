@@ -15,10 +15,6 @@ import java.util.Iterator;
  * @date 2018/06/08
  */
 public interface Text extends Iterable<String> {
-    String TYPE_HTML = "html";
-
-    String TYPE_PLAIN = "plain";
-
     int length();
 
     String getType();
@@ -36,12 +32,16 @@ public interface Text extends Iterable<String> {
         output.append(toString());
     }
 
-    static Text of(@NonNull CharSequence cs, String type) {
+    String TYPE_HTML = "html";
+
+    String TYPE_PLAIN = "plain";
+
+    static Text of(@NonNull CharSequence text, String type) {
         Validate.nonEmpty(type, "`type` cannot be null or empty");
         return new Text() {
             @Override
             public int length() {
-                return cs.length();
+                return text.length();
             }
 
             @Override
@@ -51,7 +51,7 @@ public interface Text extends Iterable<String> {
 
             @Override
             public String toString() {
-                return cs.toString();
+                return text.toString();
             }
         };
     }

@@ -2,7 +2,6 @@ package pw.phylame.commons.io;
 
 import lombok.NonNull;
 import lombok.val;
-import pw.phylame.commons.NestedException;
 import pw.phylame.commons.text.StringUtils;
 
 import java.io.*;
@@ -22,12 +21,12 @@ public final class IOUtils {
 
     public static final int DEFAULT_BUFFER_SIZE = 8192;
 
-    public static void closeQuietly(AutoCloseable c) {
+    public static void closeQuietly(Closeable c) {
         if (c != null) {
             try {
                 c.close();
-            } catch (Exception e) {
-                throw new NestedException(e);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
     }

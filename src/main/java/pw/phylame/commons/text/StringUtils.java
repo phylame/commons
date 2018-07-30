@@ -16,59 +16,56 @@ import java.util.function.Supplier;
  * @date 2018/06/08
  */
 public final class StringUtils {
-    public static final char FULL_WIDTH_SPACE = '\u3000';
-
-    public static boolean isEmpty(CharSequence cs) {
-        return cs == null || cs.length() == 0;
+    public static boolean isEmpty(CharSequence text) {
+        return text == null || text.length() == 0;
     }
 
-    public static boolean isNotEmpty(CharSequence cs) {
-        return cs != null && cs.length() != 0;
+    public static boolean isNotEmpty(CharSequence text) {
+        return text != null && text.length() != 0;
     }
 
-    public static boolean isBlank(CharSequence cs) {
-        return !isNotBlank(cs);
+    public static boolean isBlank(CharSequence text) {
+        return !isNotBlank(text);
     }
 
-    public static boolean isNotBlank(CharSequence cs) {
-        if (isEmpty(cs)) {
+    public static boolean isNotBlank(CharSequence text) {
+        if (isEmpty(text)) {
             return false;
         }
-        char ch;
-        for (int i = 0, end = cs.length(); i < end; i++) {
-            if ((ch = cs.charAt(i)) != FULL_WIDTH_SPACE && !Character.isWhitespace(ch)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean isLowerCase(CharSequence cs) {
-        if (isEmpty(cs)) {
-            return false;
-        }
-        for (int i = 0, end = cs.length(); i != end; ++i) {
-            if (Character.isUpperCase(cs.charAt(i))) {
+        for (int i = 0, end = text.length(); i < end; i++) {
+            if (Character.isWhitespace(text.charAt(i))) {
                 return false;
             }
         }
         return true;
     }
 
-    public static boolean isUpperCase(CharSequence cs) {
-        if (isEmpty(cs)) {
+    public static boolean isLowerCase(CharSequence text) {
+        if (isEmpty(text)) {
             return false;
         }
-        for (int i = 0, end = cs.length(); i != end; ++i) {
-            if (Character.isLowerCase(cs.charAt(i))) {
+        for (int i = 0, end = text.length(); i != end; ++i) {
+            if (Character.isUpperCase(text.charAt(i))) {
                 return false;
             }
         }
         return true;
     }
 
-    public static int count(String str, String target) {
-        if (isEmpty(str) || isEmpty(target)) {
+    public static boolean isUpperCase(CharSequence text) {
+        if (isEmpty(text)) {
+            return false;
+        }
+        for (int i = 0, end = text.length(); i != end; ++i) {
+            if (Character.isLowerCase(text.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static int count(String text, String target) {
+        if (isEmpty(text) || isEmpty(target)) {
             return 0;
         }
 
@@ -76,7 +73,7 @@ public final class StringUtils {
         var position = 0;
         val length = target.length();
         while (true) {
-            val i = str.indexOf(target, position);
+            val i = text.indexOf(target, position);
             if (i < 0) {
                 break;
             }
@@ -103,167 +100,183 @@ public final class StringUtils {
         return 10 + d;
     }
 
-    public static String repeat(CharSequence cs, int count) {
+    public static String repeat(CharSequence text, int count) {
         val b = new StringBuilder();
         for (int i = 0; i < count; i++) {
-            b.append(cs);
+            b.append(text);
         }
         return b.toString();
     }
 
-    public static String coalesce(String str, String emptyDefault) {
-        return isNotEmpty(str) ? str : emptyDefault;
+    public static String coalesce(String text, String emptyDefault) {
+        return isNotEmpty(text) ? text : emptyDefault;
     }
 
-    public static String coalesce(String str, @NonNull Supplier<String> emptySupplier) {
-        return isNotEmpty(str) ? str : emptySupplier.get();
+    public static String coalesce(String text, @NonNull Supplier<String> emptySupplier) {
+        return isNotEmpty(text) ? text : emptySupplier.get();
     }
 
-    public static String trim(String str) {
-        if (isEmpty(str)) {
-            return str;
+    public static String trim(String text) {
+        if (isEmpty(text)) {
+            return text;
         }
 
-        char ch;
-        int end = str.length();
         int begin = 0;
-        while (begin < end && ((ch = str.charAt(begin)) == FULL_WIDTH_SPACE || Character.isWhitespace(ch))) {
+        int end = text.length();
+        while (begin < end && Character.isWhitespace(text.charAt(begin))) {
             begin++;
         }
-        while (begin < end && ((ch = str.charAt(end - 1)) == FULL_WIDTH_SPACE || Character.isWhitespace(ch))) {
+        while (begin < end && Character.isWhitespace(text.charAt(end - 1))) {
             end--;
         }
 
-        return str.substring(begin, end);
+        return text.substring(begin, end);
     }
 
-    public static String trimToNull(String str) {
-        str = trim(str);
-        return isNotEmpty(str) ? str : null;
+    public static String trimToNull(String text) {
+        text = trim(text);
+        return isNotEmpty(text) ? text : null;
     }
 
-    public static String trimToEpmty(String str) {
-        str = trim(str);
-        return str != null ? str : "";
+    public static String trimToEpmty(String text) {
+        text = trim(text);
+        return text != null ? text : "";
     }
 
-    public static String trimStart(String str) {
-        if (isEmpty(str)) {
-            return str;
+    public static String trimStart(String text) {
+        if (isEmpty(text)) {
+            return text;
         }
-        char ch;
         int begin = 0;
-        val length = str.length();
-        while (begin < length && ((ch = str.charAt(begin)) == FULL_WIDTH_SPACE || Character.isWhitespace(ch))) {
+        val length = text.length();
+        while (begin < length && Character.isWhitespace(text.charAt(begin))) {
             ++begin;
         }
-        return str.substring(begin);
+        return text.substring(begin);
     }
 
-    public static String trimEnd(String str) {
-        if (isEmpty(str)) {
-            return str;
+    public static String trimEnd(String text) {
+        if (isEmpty(text)) {
+            return text;
         }
-        char ch;
-        val length = str.length();
-        int end = length - 1;
-        while (end >= 0 && ((ch = str.charAt(end)) == FULL_WIDTH_SPACE || Character.isWhitespace(ch))) {
+        int end = text.length() - 1;
+        while (end >= 0 && Character.isWhitespace(text.charAt(end))) {
             --end;
         }
-        return str.substring(0, end);
+        return text.substring(0, end);
     }
 
-    public static String removeStart(String str, String prefix) {
-        if (isEmpty(str) || isEmpty(prefix)) {
-            return str;
-        } else if (str.startsWith(prefix)) {
-            return str.substring(prefix.length());
+    public static String removeStart(String text, String prefix) {
+        if (isEmpty(text) || isEmpty(prefix)) {
+            return text;
+        } else if (text.startsWith(prefix)) {
+            return text.substring(prefix.length());
         } else {
-            return str;
+            return text;
         }
     }
 
-    public static String removeEnd(String str, String suffix) {
-        if (isEmpty(str) || isEmpty(suffix)) {
-            return str;
-        } else if (str.endsWith(suffix)) {
-            return str.substring(0, str.length() - suffix.length());
+    public static String removeEnd(String text, String suffix) {
+        if (isEmpty(text) || isEmpty(suffix)) {
+            return text;
+        } else if (text.endsWith(suffix)) {
+            return text.substring(0, text.length() - suffix.length());
         } else {
-            return str;
+            return text;
         }
     }
 
-    public static String replace(String str, String target, @NonNull String replacement, int limit) {
-        if (isEmpty(str) || isEmpty(target) || limit <= 0) {
-            return str;
+    public static String replace(String text, String target, @NonNull String replacement, int limit) {
+        if (isEmpty(text) || isEmpty(target) || limit <= 0) {
+            return text;
         }
         var begin = 0;
         val length = target.length();
         val b = new StringBuilder();
         for (int i = 0; i < limit; i++) {
-            val index = str.indexOf(target, begin);
+            val index = text.indexOf(target, begin);
             if (index < 0) {
                 break;
             }
-            b.append(str, begin, index).append(replacement);
+            b.append(text, begin, index).append(replacement);
             begin = index + length;
         }
-        b.append(str.substring(begin));
+        b.append(text.substring(begin));
         return b.toString();
     }
 
-    public static String replaceFirst(String str, String target, @NonNull String replacement) {
-        if (isEmpty(str) || isEmpty(target)) {
-            return str;
+    public static String replaceFirst(String text, String target, @NonNull String replacement) {
+        if (isEmpty(text) || isEmpty(target)) {
+            return text;
         }
-        val index = str.indexOf(target);
+        val index = text.indexOf(target);
         return index != -1
-                ? str.substring(0, index) + replacement + str.substring(index + target.length())
-                : str;
+                ? text.substring(0, index) + replacement + text.substring(index + target.length())
+                : text;
     }
 
-    public static String replaceLast(String str, String target, @NonNull String replacement) {
-        if (isEmpty(str) || isEmpty(target)) {
-            return str;
+    public static String replaceLast(String text, String target, @NonNull String replacement) {
+        if (isEmpty(text) || isEmpty(target)) {
+            return text;
         }
-        val index = str.lastIndexOf(target);
+        val index = text.lastIndexOf(target);
         return index != -1
-                ? str.substring(0, index) + replacement + str.substring(index + target.length())
-                : str;
+                ? text.substring(0, index) + replacement + text.substring(index + target.length())
+                : text;
     }
 
-    public static String[] split(@NonNull String str, @NonNull String separator, int limit) {
+    public static String[] split(@NonNull String text, @NonNull String separator, int limit) {
         if (limit <= 0) {
-            return str.split(separator);
+            return text.split(separator);
         }
         int i, pos = 0;
         val width = separator.length();
-        val results = new ArrayList<String>();
+        val results = new ArrayList<String>(limit);
         for (i = 1; i < limit; ++i) {
-            val begin = str.indexOf(separator, pos);
+            val begin = text.indexOf(separator, pos);
             if (begin == -1) {
-                results.add(str.substring(pos));
+                results.add(text.substring(pos));
                 break;
             }
-            results.add(str.substring(pos, begin));
+            results.add(text.substring(pos, begin));
             pos = begin + width;
         }
         if (i == limit) {
-            results.add(str.substring(pos));
+            results.add(text.substring(pos));
         }
         return results.toArray(new String[0]);
     }
 
-    public static Pair<String, String> partition(String str, String separator) {
-        if (isEmpty(str)) {
+    public static Pair<String, String> partition(String text, String separator) {
+        if (isEmpty(text)) {
             return Pair.of("", "");
         } else if (isEmpty(separator)) {
-            return Pair.of(str, "");
+            return Pair.of(text, "");
         }
-        val index = str.indexOf(separator);
+        val index = text.indexOf(separator);
         return index != -1
-                ? Pair.of(str.substring(0, index), str.substring(index + separator.length()))
-                : Pair.of(str, "");
+                ? Pair.of(text.substring(0, index), text.substring(index + separator.length()))
+                : Pair.of(text, "");
+    }
+
+    public static String getFirst(String text, String separator) {
+        if (isEmpty(text)) {
+            return text;
+        } else if (isEmpty(separator)) {
+            return text;
+        }
+        val index = text.indexOf(separator);
+        return index != -1 ? text.substring(0, index) : "";
+    }
+
+    public static String getSecond(String text, String separator) {
+        if (isEmpty(text)) {
+            return text;
+        } else if (isEmpty(separator)) {
+            return text;
+        }
+        val index = text.indexOf(separator);
+        return index != -1 ? text.substring(index + separator.length()) : "";
     }
 
     public static <E> String join(@NonNull Iterable<E> items, @NonNull CharSequence separator) {
@@ -282,23 +295,19 @@ public final class StringUtils {
                 .join();
     }
 
-    public static String getValue(String str, String name, String partSeparator) {
-        return getValue(str, name, "=", partSeparator, true);
+    public static String getValue(String text, String name, String partSeparator) {
+        return getValue(text, name, "=", partSeparator, true);
     }
 
-    public static String getValue(String str, String name, String partSeparator, boolean caseSensitive) {
-        return getValue(str, name, "=", partSeparator, caseSensitive);
+    public static String getValue(String text, String name, String partSeparator, boolean caseSensitive) {
+        return getValue(text, name, "=", partSeparator, caseSensitive);
     }
 
-    public static String getValue(String str,
-                                  @NonNull String name,
-                                  @NonNull String valueSeparator,
-                                  @NonNull String partSeparator,
-                                  boolean caseSensitive) {
-        if (isEmpty(str)) {
+    public static String getValue(String text, @NonNull String name, @NonNull String valueSeparator, @NonNull String partSeparator, boolean caseSensitive) {
+        if (isEmpty(text)) {
             return null;
         }
-        val parts = split(str, partSeparator, 0);
+        val parts = split(text, partSeparator, 0);
         for (String part : parts) {
             part = part.trim();
             if (isEmpty(part)) {

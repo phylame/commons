@@ -28,15 +28,11 @@ public final class Reflections {
 
     public static String packagePath(Class<?> clazz) {
         val pkg = clazz.getPackage();
-        return pkg != null
-                ? pkg.getName().replace('.', '/')
-                : "";
+        return pkg != null ? pkg.getName().replace('.', '/') : "";
     }
 
     public static String resolvePath(Class<?> clazz, String name) {
         val path = packagePath(clazz);
-        return !path.isEmpty()
-                ? path + '/' + name
-                : name;
+        return !path.isEmpty() ? path + '/' + name : name;
     }
 }

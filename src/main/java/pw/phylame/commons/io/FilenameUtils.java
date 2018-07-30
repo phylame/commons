@@ -96,13 +96,6 @@ public final class FilenameUtils {
     }
 
     public static String detectMime(String mime, String path) {
-        if (StringUtils.isNotEmpty(mime)) {
-            return mime;
-        }
-        val mimeType = FilenameUtils.mimeType(path);
-        if (mimeType != null) {
-            return mimeType;
-        }
-        return null;
+        return StringUtils.isEmpty(mime) ? FilenameUtils.mimeType(path) : mime;
     }
 }

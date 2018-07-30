@@ -34,25 +34,25 @@ public final class FormatterService {
 
     private final Map<Class<?>, Formatter<?>> registry = new IdentityHashMap<>();
 
-    public <T extends Enum<T>> void register(@NonNull Class<T> enumType) {
-        register(enumType, new DefaultFormatter<>(enumType));
+    public boolean contains(Class<?> type) {
+        return registry.containsKey(type);
     }
 
     public <T> void register(@NonNull Class<T> type, @NonNull Formatter<T> formatter) {
         registry.put(type, formatter);
     }
 
-    public void unregister(Class<?> type) {
-        if (type != null) {
-            registry.remove(type);
-        }
+    public <T extends Enum<T>> void register(@NonNull Class<T> enumType) {
+        register(enumType, new DefaultFormatter<>(enumType));
+    }
+
+    public void unregister(@NonNull Class<?> type) {
+        registry.remove(type);
     }
 
     @SuppressWarnings("unchecked")
     public String render(@NonNull Object obj) {
-        return !(obj instanceof CharSequence)
-                ? render(obj, (Class<Object>) obj.getClass())
-                : obj.toString();
+        return !(obj instanceof CharSequence) ? render(obj, (Class<Object>) obj.getClass()) : obj.toString();
     }
 
     @SuppressWarnings("unchecked")
@@ -102,8 +102,8 @@ public final class FormatterService {
         register(Charset.class, new DefaultFormatter<>(Charset.class));
 
         register(Date.class, new DefaultFormatter<>(Date.class));
-        register(LocalTime.class, new DefaultFormatter<>(LocalTime.class));
         register(LocalDate.class, new DefaultFormatter<>(LocalDate.class));
+        register(LocalTime.class, new DefaultFormatter<>(LocalTime.class));
         register(LocalDateTime.class, new DefaultFormatter<>(LocalDateTime.class));
         register(Instant.class, new DefaultFormatter<>(Instant.class));
     }
@@ -127,7 +127,7 @@ public final class FormatterService {
         }
 
         @Override
-        @SuppressWarnings({"unchecked", "rawtypes"})
+        @SuppressWarnings({"unchecked"})
         public T parse(String str) {
             if (type == Integer.class) {
                 return (T) Integer.decode(str);

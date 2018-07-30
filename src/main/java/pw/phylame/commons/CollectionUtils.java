@@ -1,7 +1,6 @@
 package pw.phylame.commons;
 
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import pw.phylame.commons.value.Keyed;
 
@@ -23,6 +22,10 @@ public final class CollectionUtils {
 
     public static boolean isEmpty(Map<?, ?> m) {
         return m == null || m.isEmpty();
+    }
+
+    public static boolean isNotEmpty(Map<?, ?> m) {
+        return m != null && !m.isEmpty();
     }
 
     public static <E> Optional<E> firstOf(Collection<E> c) {
@@ -63,7 +66,17 @@ public final class CollectionUtils {
     }
 
     public static <E> Iterator<E> iterator(@NonNull Enumeration<E> e) {
-        return new EnumerationIterator<>(e);
+        return new Iterator<E>() {
+            @Override
+            public boolean hasNext() {
+                return e.hasMoreElements();
+            }
+
+            @Override
+            public E next() {
+                return e.nextElement();
+            }
+        };
     }
 
     public static <E> Set<E> setOf(E a) {
@@ -90,20 +103,5 @@ public final class CollectionUtils {
         val set = new HashSet<E>();
         Collections.addAll(set, a);
         return Collections.unmodifiableSet(set);
-    }
-
-    @RequiredArgsConstructor
-    private static class EnumerationIterator<E> implements Iterator<E> {
-        private final Enumeration<E> e;
-
-        @Override
-        public boolean hasNext() {
-            return e.hasMoreElements();
-        }
-
-        @Override
-        public E next() {
-            return e.nextElement();
-        }
     }
 }

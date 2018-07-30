@@ -8,7 +8,6 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
     private static final int DEFAULT_BUFFER_BIT_LEN = 12;
 
     private byte buf[];
-    private int bufbitlen;
     private int bufsize;
     private long bufmask;
     private boolean bufdirty;
@@ -19,8 +18,6 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
     private long bufendpos;
     private long fileendpos;
 
-    private boolean append;
-    private String filename;
     private long initfilelen;
 
     public BufferedRandomAccessFile(String name) throws IOException {
@@ -61,17 +58,17 @@ public class BufferedRandomAccessFile extends RandomAccessFile {
             throw new IllegalArgumentException("bufbitlen size must > 0");
         }
 
-        append = !mode.equals("r");
+        boolean append = !mode.equals("r");
 
-        filename = name;
+        String filename = name;
         initfilelen = super.length();
         fileendpos = initfilelen - 1;
         curpos = super.getFilePointer();
 
-        this.bufbitlen = bufbitlen;
+        int bufbitlen1 = bufbitlen;
         bufsize = 1 << bufbitlen;
         buf = new byte[bufsize];
-        bufmask = ~(bufsize - 1L);
+        bufmask = -bufsize;
         bufdirty = false;
         bufusedsize = 0;
         bufstartpos = -1;

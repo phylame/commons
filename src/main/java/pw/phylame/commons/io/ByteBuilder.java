@@ -11,8 +11,8 @@ public final class ByteBuilder extends ByteArrayOutputStream {
         super();
     }
 
-    public ByteBuilder(int size) {
-        super(size);
+    public ByteBuilder(int capacity) {
+        super(capacity);
     }
 
     public ByteBuilder(@NonNull byte[] src) {
