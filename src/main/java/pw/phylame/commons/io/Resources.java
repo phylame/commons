@@ -1,22 +1,16 @@
 package pw.phylame.commons.io;
 
-import lombok.NonNull;
 import lombok.val;
 import pw.phylame.commons.Reflections;
 import pw.phylame.commons.Validate;
 import pw.phylame.commons.value.Lazy;
-import pw.phylame.commons.vdm.VdmEntry;
-import pw.phylame.commons.vdm.VdmReader;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Properties;
@@ -130,82 +124,6 @@ public final class Resources {
 
     public static ResourceBundle getResourceBundle(String name, Locale locale, ClassLoader loader) {
         return ResourceBundle.getBundle(name, locale, loader, ResourceControl.INSTANCE);
-    }
-
-    public static Resource of(byte[] data, String name) {
-        return of(data, name, null);
-    }
-
-    public static Resource of(@NonNull byte[] data, String name, String mime) {
-        Validate.nonEmpty(name, "`name` cannot be empty");
-        return new AbstractResource(mime) {
-            @Override
-            public long size() {
-                return data.length;
-            }
-
-            @Override
-            public String getName() {
-                return name;
-            }
-
-            @Override
-            public InputStream openStream() {
-                return new ByteArrayInputStream(data);
-            }
-
-            @Override
-            public String toString() {
-                return "bytes://" + super.toString();
-            }
-        };
-    }
-
-    public static Resource of(Path path) {
-        return of(path, null);
-    }
-
-    public static Resource of(@NonNull Path path, String mime) {
-        return new AbstractResource(mime) {
-            @Override
-            public long size() {
-                try {
-                    return Files.size(path);
-                } catch (IOException e) {
-                    return -1L;
-                }
-            }
-
-            @Override
-            public String getName() {
-                return path.toString();
-            }
-
-            @Override
-            public InputStream openStream() throws IOException {
-                return Files.newInputStream(path);
-            }
-        };
-    }
-
-    public static Resource of(URL url) {
-        return new UrlResource(url, url.getPath(), null);
-    }
-
-    public static Resource of(URL url, String name) {
-        return new UrlResource(url, name, null);
-    }
-
-    public static Resource of(URL url, String name, String mime) {
-        return new UrlResource(url, name, mime);
-    }
-
-    public static Resource of(VdmReader reader, VdmEntry entry) {
-        return new VdmResource(reader, entry, null);
-    }
-
-    public static Resource of(VdmReader reader, VdmEntry entry, String mime) {
-        return new VdmResource(reader, entry, mime);
     }
 
     private static class ResourceControl extends ResourceBundle.Control {

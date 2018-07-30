@@ -5,9 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
 import pw.phylame.commons.io.FilenameUtils;
+import pw.phylame.commons.io.Resource;
 import pw.phylame.commons.io.Resources;
 import pw.phylame.commons.text.StringUtils;
-import pw.phylame.commons.text.Texts;
+import pw.phylame.commons.text.Text;
 import pw.phylame.commons.value.Lazy;
 import pw.phylame.commons.value.Value;
 
@@ -161,8 +162,8 @@ public final class TypeMapping {
         setDefault(TIME, Value.of(LocalTime::now));
         setDefault(DATETIME, Value.of(LocalDateTime::now));
         setDefault(LOCALE, Value.of(Locale::getDefault));
-        setDefault(TEXT, Texts.of("", Texts.TYPE_PLAIN));
-        setDefault(RESOURCE, Resources.of(new byte[0], "none", FilenameUtils.UNKNOWN_MIME_TYPE));
+        setDefault(TEXT, Text.of("", Text.TYPE_PLAIN));
+        setDefault(RESOURCE, Resource.of(new byte[0], "none", FilenameUtils.UNKNOWN_MIME_TYPE));
     }
 
     private Item acquireItem(String name) {

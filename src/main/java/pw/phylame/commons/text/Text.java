@@ -1,9 +1,13 @@
 package pw.phylame.commons.text;
 
+import lombok.NonNull;
 import pw.phylame.commons.Validate;
+import pw.phylame.commons.io.IOUtils;
+import pw.phylame.commons.io.Resource;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 
 /**
@@ -11,6 +15,10 @@ import java.util.Iterator;
  * @date 2018/06/08
  */
 public interface Text extends Iterable<String> {
+    String TYPE_HTML = "html";
+
+    String TYPE_PLAIN = "plain";
+
     int length();
 
     String getType();
@@ -26,5 +34,30 @@ public interface Text extends Iterable<String> {
     default void writeTo(Writer output) throws IOException {
         Validate.nonNull(output);
         output.append(toString());
+    }
+
+    static Text of(@NonNull CharSequence cs, String type) {
+        Validate.nonEmpty(type, "`type` cannot be null or empty");
+        return new Text() {
+            @Override
+            public int length() {
+                return cs.length();
+            }
+
+            @Override
+            public String getType() {
+                return type;
+            }
+
+            @Override
+            public String toString() {
+                return cs.toString();
+            }
+        };
+    }
+
+    static Text of(@NonNull Resource resource, Charset charset, String type) {
+        Validate.nonEmpty(type, "`type` cannot be null or empty");
+        return new ResourceText(resource, charset != null ? charset : IOUtils.defaultCharset(), type);
     }
 }
