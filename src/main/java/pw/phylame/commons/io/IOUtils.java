@@ -106,6 +106,24 @@ public final class IOUtils {
         return copied;
     }
 
+    public static byte[] toBytes(InputStream input) throws IOException {
+        val out = new ByteBuilder();
+        copy(input, out, -1);
+        return out.getRawArray();
+    }
+
+    public static byte[] toBytes(RandomAccessFile file) throws IOException {
+        val out = new ByteBuilder();
+        copy(file, out, -1);
+        return out.getRawArray();
+    }
+
+    public static byte[] toBytes(ByteSource source) throws IOException {
+        val out = new ByteBuilder();
+        copy(source, ByteSink.of(out), -1);
+        return out.getRawArray();
+    }
+
     public static BufferedReader buffered(Reader reader) {
         return !(reader instanceof BufferedReader)
                 ? new BufferedReader(reader, DEFAULT_BUFFER_SIZE)

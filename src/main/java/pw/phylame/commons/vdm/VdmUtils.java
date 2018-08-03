@@ -3,6 +3,7 @@ package pw.phylame.commons.vdm;
 import lombok.val;
 import pw.phylame.commons.io.IOConsumer;
 import pw.phylame.commons.io.IOFunction;
+import pw.phylame.commons.io.IOUtils;
 import pw.phylame.commons.setting.Settings;
 
 import java.io.IOException;
@@ -70,6 +71,18 @@ public final class VdmUtils {
         }
         try (val stream = reader.openStream(entry)) {
             return block.apply(stream);
+        }
+    }
+
+    public static byte[] readData(VdmReader reader, String name) throws IOException {
+        val stream = reader.openStream(name);
+        if (stream == null) {
+            throw new NoSuchFileException(name);
+        }
+        try {
+            return IOUtils.toBytes(stream);
+        } finally {
+            stream.close();
         }
     }
 
