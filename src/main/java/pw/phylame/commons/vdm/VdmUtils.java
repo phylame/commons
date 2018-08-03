@@ -9,6 +9,7 @@ import pw.phylame.commons.setting.Settings;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -54,6 +55,14 @@ public final class VdmUtils {
         }
     }
 
+    public static void writeString(VdmWriter writer, String name, String text) throws IOException {
+        writeString(writer, name, text, IOUtils.defaultCharset());
+    }
+
+    public static void writeString(VdmWriter writer, String name, String text, Charset charset) throws IOException {
+        writeData(writer, name, text.getBytes(charset));
+    }
+
     public static void useStream(VdmReader reader, String name, IOConsumer<? super InputStream> block) throws IOException {
         val entry = reader.getEntry(name);
         if (entry == null) {
@@ -84,6 +93,14 @@ public final class VdmUtils {
         } finally {
             stream.close();
         }
+    }
+
+    public static String readString(VdmReader reader, String name) throws IOException {
+        return readString(reader, name, IOUtils.defaultCharset());
+    }
+
+    public static String readString(VdmReader reader, String name, Charset charset) throws IOException {
+        return new String(readData(reader, name), charset);
     }
 
     public static VdmReader detectReader(Path path, Settings settings) throws IOException {
