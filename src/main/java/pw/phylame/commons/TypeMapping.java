@@ -1,7 +1,6 @@
 package pw.phylame.commons;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
 import pw.phylame.commons.io.FilenameUtils;
@@ -21,7 +20,6 @@ import java.util.*;
  * @author wp <phylame@163.com>
  * @date 2018/06/30
  */
-@Slf4j
 public final class TypeMapping {
     // standard type names
     public static final String REAL = "real";

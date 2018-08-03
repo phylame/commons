@@ -127,7 +127,7 @@ public final class FormatterService {
         }
 
         @Override
-        @SuppressWarnings({"unchecked"})
+        @SuppressWarnings({"unchecked", "rawtypes"})
         public T parse(String str) {
             if (type == Integer.class) {
                 return (T) Integer.decode(str);
