@@ -21,23 +21,24 @@ public final class StringUtils {
     }
 
     public static boolean isNotEmpty(CharSequence text) {
-        return text != null && text.length() != 0;
+        return !isEmpty(text);
     }
 
     public static boolean isBlank(CharSequence text) {
-        return !isNotBlank(text);
-    }
-
-    public static boolean isNotBlank(CharSequence text) {
-        if (isEmpty(text)) {
-            return false;
+        int length;
+        if (text == null || (length = text.length()) == 0) {
+            return true;
         }
-        for (int i = 0, end = text.length(); i < end; i++) {
-            if (Character.isWhitespace(text.charAt(i))) {
+        for (int i = 0; i < length; i++) {
+            if (!Character.isWhitespace(text.charAt(i))) {
                 return false;
             }
         }
         return true;
+    }
+
+    public static boolean isNotBlank(CharSequence text) {
+        return !isBlank(text);
     }
 
     public static boolean isLowerCase(CharSequence text) {
@@ -45,7 +46,7 @@ public final class StringUtils {
             return false;
         }
         for (int i = 0, end = text.length(); i != end; ++i) {
-            if (Character.isUpperCase(text.charAt(i))) {
+            if (!Character.isLowerCase(text.charAt(i))) {
                 return false;
             }
         }
@@ -57,7 +58,7 @@ public final class StringUtils {
             return false;
         }
         for (int i = 0, end = text.length(); i != end; ++i) {
-            if (Character.isLowerCase(text.charAt(i))) {
+            if (!Character.isUpperCase(text.charAt(i))) {
                 return false;
             }
         }
@@ -69,19 +70,15 @@ public final class StringUtils {
             return 0;
         }
 
-        var counter = 0;
-        var position = 0;
+        int count = 0;
+        int index = 0;
         val length = target.length();
-        while (true) {
-            val i = text.indexOf(target, position);
-            if (i < 0) {
-                break;
-            }
-            ++counter;
-            position = i + length;
+        while ((index = text.indexOf(target, index)) != -1) {
+            index += length;
+            count++;
         }
 
-        return counter;
+        return count;
     }
 
     public static int size(int x) {
@@ -117,12 +114,12 @@ public final class StringUtils {
     }
 
     public static String trim(String text) {
-        if (isEmpty(text)) {
+        int end;
+        if (text == null || (end = text.length()) == 0) {
             return text;
         }
 
         int begin = 0;
-        int end = text.length();
         while (begin < end && Character.isWhitespace(text.charAt(begin))) {
             begin++;
         }
@@ -134,35 +131,39 @@ public final class StringUtils {
     }
 
     public static String trimToNull(String text) {
-        text = trim(text);
-        return isNotEmpty(text) ? text : null;
+        val ts = trim(text);
+        return isEmpty(ts) ? null : ts;
     }
 
     public static String trimToEpmty(String text) {
-        text = trim(text);
-        return text != null ? text : "";
+        return text == null ? "" : trim(text);
     }
 
     public static String trimStart(String text) {
-        if (isEmpty(text)) {
+        int end;
+        if (text == null || (end = text.length()) == 0) {
             return text;
         }
+
         int begin = 0;
-        val length = text.length();
-        while (begin < length && Character.isWhitespace(text.charAt(begin))) {
+        while (begin < end && Character.isWhitespace(text.charAt(begin))) {
             ++begin;
         }
+
         return text.substring(begin);
     }
 
     public static String trimEnd(String text) {
-        if (isEmpty(text)) {
+        int length;
+        if (text == null || (length = text.length()) == 0) {
             return text;
         }
-        int end = text.length() - 1;
+
+        int end = length - 1;
         while (end >= 0 && Character.isWhitespace(text.charAt(end))) {
             --end;
         }
+
         return text.substring(0, end);
     }
 
