@@ -2,10 +2,10 @@ package pw.phylame.commons.io;
 
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
 import pw.phylame.commons.CollectionUtils;
+import pw.phylame.commons.log.Log;
 import pw.phylame.commons.text.StringUtils;
 
 import java.io.IOException;
@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.GZIPInputStream;
 
-@Slf4j
 public final class HttpUtils {
     public static String randomAgent() {
         val stream = HttpUtils.class.getResourceAsStream("agents.lst");
@@ -28,7 +27,7 @@ public final class HttpUtils {
                 IOUtils.closeQuietly(stream);
             }
         } else {
-            log.debug("not found agents file");
+            Log.d(HttpUtils.class.getName(), "not found agents file");
         }
         return null;
     }

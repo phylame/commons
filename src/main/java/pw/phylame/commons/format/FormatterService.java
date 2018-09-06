@@ -35,7 +35,7 @@ public final class FormatterService {
     private final Map<Class<?>, Formatter<?>> registry = new IdentityHashMap<>();
 
     public boolean contains(Class<?> type) {
-        return registry.containsKey(type);
+        return type != null && registry.containsKey(type);
     }
 
     public <T> void register(@NonNull Class<T> type, @NonNull Formatter<T> formatter) {

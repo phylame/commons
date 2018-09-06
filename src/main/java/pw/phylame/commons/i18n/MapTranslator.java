@@ -1,20 +1,12 @@
 package pw.phylame.commons.i18n;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
+import lombok.Value;
 
 import java.util.Map;
 import java.util.MissingResourceException;
 
-/**
- * @author wp <phylame@163.com>
- * @date 2018/07/27
- */
-@Getter
-@Setter
-@AllArgsConstructor
+@Value
 public class MapTranslator implements Translator {
     @NonNull
     private Map<String, String> map;

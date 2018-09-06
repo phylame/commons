@@ -17,9 +17,8 @@ import java.nio.file.Path;
 public final class VdmUtils {
     public static void useStream(VdmWriter writer, String name, IOConsumer<? super OutputStream> block) throws IOException {
         val entry = writer.newEntry(name);
-        val stream = writer.putEntry(entry);
         try {
-            block.accept(stream);
+            block.accept(writer.putEntry(entry));
         } finally {
             writer.closeEntry(entry);
         }
@@ -27,9 +26,8 @@ public final class VdmUtils {
 
     public static <R> R useStream(VdmWriter writer, String name, IOFunction<? super OutputStream, R> block) throws IOException {
         val entry = writer.newEntry(name);
-        val stream = writer.putEntry(entry);
         try {
-            return block.apply(stream);
+            return block.apply(writer.putEntry(entry));
         } finally {
             writer.closeEntry(entry);
         }
@@ -37,9 +35,8 @@ public final class VdmUtils {
 
     public static void writeData(VdmWriter writer, String name, byte[] data) throws IOException {
         val entry = writer.newEntry(name);
-        val stream = writer.putEntry(entry);
         try {
-            stream.write(data);
+            writer.putEntry(entry).write(data);
         } finally {
             writer.closeEntry(entry);
         }
@@ -47,9 +44,8 @@ public final class VdmUtils {
 
     public static void writeData(VdmWriter writer, String name, byte[] data, int off, int len) throws IOException {
         val entry = writer.newEntry(name);
-        val stream = writer.putEntry(entry);
         try {
-            stream.write(data, off, len);
+            writer.putEntry(entry).write(data, off, len);
         } finally {
             writer.closeEntry(entry);
         }

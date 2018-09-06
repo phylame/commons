@@ -8,11 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-/**
- * @author wp <phylame@163.com>
- * @date 2018/06/2018
- */
-public abstract class AsyncValue<T> implements Value<T> {
+public abstract class Worker<T> implements Value<T> {
     private T value;
 
     private volatile boolean done = false;

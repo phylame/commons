@@ -1,9 +1,10 @@
 package pw.phylame.commons.io;
 
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import pw.phylame.commons.CollectionUtils;
 import pw.phylame.commons.Reflections;
+import pw.phylame.commons.log.Log;
+import pw.phylame.commons.log.LogLevel;
 import pw.phylame.commons.text.StringUtils;
 
 import java.io.IOException;
@@ -16,7 +17,6 @@ import java.util.Properties;
  * @author wp <phylame@163.com>
  * @date 2018/06/2018
  */
-@Slf4j
 public final class MapFileTypeDetector extends FileTypeDetector {
     private static final String MIME_TYPE_FILE_NAME = "mime.properties";
 
@@ -34,8 +34,8 @@ public final class MapFileTypeDetector extends FileTypeDetector {
                 }
             }
         } catch (IOException e) {
-            if (log.isErrorEnabled()) {
-                log.error("cannot load mime types from " + path, e);
+            if (Log.isEnable(LogLevel.ERROR)) {
+                Log.e(getClass().getName(), "cannot load mime types from " + path, e);
             }
         }
     }

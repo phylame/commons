@@ -3,11 +3,10 @@ package pw.phylame.commons.spi;
 import lombok.NonNull;
 import lombok.val;
 import lombok.var;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pw.phylame.commons.CollectionUtils;
 import pw.phylame.commons.IllegalImplementationException;
 import pw.phylame.commons.Reflections;
+import pw.phylame.commons.log.Log;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,8 +18,6 @@ import java.util.ServiceLoader;
  * @date 2018/06/2018
  */
 public class ServiceManager<T extends KeyedService> {
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     private final HashMap<String, T> registry = new HashMap<>();
 
     private final HashSet<T> services = new HashSet<>();
@@ -71,7 +68,7 @@ public class ServiceManager<T extends KeyedService> {
                 services.add(service);
             }
         } catch (ServiceConfigurationError e) {
-            log.error("error when loading services", e);
+            Log.e(getClass().getName(), "error when loading services", e);
         }
         loaded = true;
     }

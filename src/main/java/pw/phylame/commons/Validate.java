@@ -3,7 +3,7 @@ package pw.phylame.commons;
 import pw.phylame.commons.text.StringUtils;
 
 /**
- * Validation for objects.
+ * Utilities for assert and validation.
  *
  * @author wp <phylame@163.com>
  * @date 2018/06/08

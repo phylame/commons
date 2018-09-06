@@ -1,21 +1,13 @@
 package pw.phylame.commons.i18n;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
+import lombok.Value;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-/**
- * @author wp <phylame@163.com>
- * @date 2018/07/27
- */
-@Getter
-@Setter
-@AllArgsConstructor
+@Value
 public class ResourceBundleTranslator implements Translator {
     @NonNull
     private ResourceBundle resourceBundle;

@@ -7,10 +7,6 @@ import pw.phylame.commons.text.StringUtils;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 
-/**
- * @author wp <phylame@163.com>
- * @date 2018/07/27
- */
 public interface Translator {
     String tr(String key) throws MissingResourceException;
 

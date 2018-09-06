@@ -442,6 +442,67 @@ public final class StringUtils {
         return str.substring(off, off + len);
     }
 
+    public static String abbreviate(String str, int maxWidth) {
+        return abbreviate(str, "...", 0, maxWidth);
+    }
+
+    public static String abbreviate(String str, int offset, int maxWidth) {
+        return abbreviate(str, "...", offset, maxWidth);
+    }
+
+    public static String abbreviate(String str, String abbrevMarker, int maxWidth) {
+        return abbreviate(str, abbrevMarker, 0, maxWidth);
+    }
+
+    public static String abbreviate(String str, String abbrevMarker, int offset, int maxWidth) {
+        if (isEmpty(str) || isEmpty(abbrevMarker)) {
+            return str;
+        }
+
+        val abbrevMarkerLength = abbrevMarker.length();
+        val minAbbrevWidth = abbrevMarkerLength + 1;
+        val minAbbrevWidthOffset = abbrevMarkerLength + abbrevMarkerLength + 1;
+
+        if (maxWidth < minAbbrevWidth) {
+            throw new IllegalArgumentException(String.format("Minimum abbreviation width is %d", minAbbrevWidth));
+        }
+        if (str.length() <= maxWidth) {
+            return str;
+        }
+        if (offset > str.length()) {
+            offset = str.length();
+        }
+        if (str.length() - offset < maxWidth - abbrevMarkerLength) {
+            offset = str.length() - (maxWidth - abbrevMarkerLength);
+        }
+        if (offset <= abbrevMarkerLength + 1) {
+            return str.substring(0, maxWidth - abbrevMarkerLength) + abbrevMarker;
+        }
+        if (maxWidth < minAbbrevWidthOffset) {
+            throw new IllegalArgumentException("Minimum abbreviation width with offset is " + minAbbrevWidthOffset);
+        }
+        if (offset + maxWidth - abbrevMarkerLength < str.length()) {
+            return abbrevMarker + abbreviate(str.substring(offset), abbrevMarker, maxWidth - abbrevMarkerLength);
+        }
+        return abbrevMarker + str.substring(str.length() - (maxWidth - abbrevMarkerLength));
+    }
+
+    public static String abbreviateMiddle(String str, String middle, int length) {
+        if (isEmpty(str) || isEmpty(middle)) {
+            return str;
+        }
+
+        if (length >= str.length() || length < middle.length() + 2) {
+            return str;
+        }
+
+        val target = length - middle.length();
+        val begin = target / 2 + target % 2;
+        val end = str.length() - target / 2;
+
+        return str.substring(0, begin) + middle + str.substring(end);
+    }
+
     public static String[] split(String text, String separator, int limit) {
         if (limit <= 0) {
             return text.split(separator);
