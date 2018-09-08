@@ -1,8 +1,6 @@
 package pw.phylame.commons.setting;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.val;
+import lombok.*;
 import pw.phylame.commons.format.FormatterService;
 import pw.phylame.commons.text.StringJoiner;
 import pw.phylame.commons.value.Pair;
@@ -20,6 +18,10 @@ public abstract class AbstractSettings implements Settings {
     @Getter
     private Map<String, Definition> definitions = new HashMap<>();
 
+    @Getter
+    @Setter(AccessLevel.PROTECTED)
+    private boolean modified;
+
     protected abstract Object handleGet(String key);
 
     protected abstract Object handleSet(String key, Object value);
@@ -36,7 +38,7 @@ public abstract class AbstractSettings implements Settings {
     }
 
     @Override
-    public final Object set(String key, Object value) {
+    public final Object set(@NonNull String key, @NonNull Object value) {
         val definition = getDefinition(key);
         if (definition != null) {
             val type = definition.getType();
@@ -44,11 +46,16 @@ public abstract class AbstractSettings implements Settings {
                 throw new IllegalArgumentException("`" + key + "` require type: " + type);
             }
         }
-        return handleSet(key, value);
+        val last = handleSet(key, value);
+        setModified(true);
+        return last;
     }
 
     @Override
     public final boolean isEnable(String key) {
+        if (key == null) {
+            return false;
+        }
         val definition = getDefinition(key);
         if (definition == null) {
             return true;
@@ -69,6 +76,9 @@ public abstract class AbstractSettings implements Settings {
 
     @Override
     public final Object get(String key) {
+        if (key == null) {
+            return null;
+        }
         val value = handleGet(key);
         if (value != null) {
             return value;
@@ -81,6 +91,9 @@ public abstract class AbstractSettings implements Settings {
     }
 
     public final <T> T get(String key, @NonNull Class<T> type) {
+        if (key == null) {
+            return null;
+        }
         val value = get(key);
         if (value == null) {
             return null;

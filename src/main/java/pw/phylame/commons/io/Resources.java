@@ -136,7 +136,9 @@ public final class Resources {
         @Override
         public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload) throws IllegalAccessException, InstantiationException, IOException {
             if (format.equals("java.properties")) {
-                val stream = open(toBundleName(baseName, locale), loader, !reload);
+                val bundleName = toBundleName(baseName, locale);
+                val resourceName = toResourceName(bundleName, "properties");
+                val stream = open(resourceName, loader, !reload);
                 if (stream != null) {
                     try {
                         return new PropertyResourceBundle(stream);

@@ -7,8 +7,8 @@ import lombok.var;
 import pw.phylame.commons.text.StringUtils;
 
 public final class Log {
-    public static final String DEFAULT_LEVEL_KEY = Log.class.getName() + ".level";
-    public static final String DEFAULT_FACADE_KEY = Log.class.getName() + ".facade";
+    public static final String DEFAULT_LEVEL_KEY = "pw.phylame.commons.log.Log.level";
+    public static final String DEFAULT_FACADE_KEY = "pw.phylame.commons.log.Log.facade";
 
     @Getter
     private static LogLevel level = LogLevel.INFO;

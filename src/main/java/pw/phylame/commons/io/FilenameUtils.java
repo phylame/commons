@@ -98,4 +98,24 @@ public final class FilenameUtils {
     public static String detectMime(String mime, String path) {
         return StringUtils.isEmpty(mime) ? FilenameUtils.mimeType(path) : mime;
     }
+
+    public static String padName(String path, String prefix, String suffix) {
+        val pair = splitPath(path);
+        val sb = new StringBuilder(path.length() + prefix.length() + suffix.length());
+        int begin = pair.getFirst();
+        int end = pair.getSecond();
+        if (begin != -1) {
+            sb.append(path, 0, begin + 1)
+                    .append(prefix)
+                    .append(path, begin + 1, end)
+                    .append(suffix)
+                    .append(path, end, path.length());
+        } else {
+            sb.append(prefix)
+                    .append(path, 0, end)
+                    .append(suffix)
+                    .append(path, end, path.length());
+        }
+        return sb.toString();
+    }
 }

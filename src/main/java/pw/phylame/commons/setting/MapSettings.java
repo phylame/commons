@@ -55,12 +55,20 @@ public class MapSettings extends AbstractSettings implements Persistable {
 
     @Override
     public Object remove(String key) {
-        return values.remove(key);
+        if (key == null) {
+            return null;
+        }
+        val last = values.remove(key);
+        setModified(true);
+        return last;
     }
 
     @Override
     public void clear() {
         values.clear();
+        if (!values.isEmpty()) {
+            setModified(true);
+        }
     }
 
     @Override
@@ -69,9 +77,7 @@ public class MapSettings extends AbstractSettings implements Persistable {
     }
 
     public void load(@NonNull Reader reader) throws IOException {
-        val props = new Properties();
-        props.load(reader);
-        CollectionUtils.copy(props, values);
+        CollectionUtils.copy(IOUtils.toProperties(reader), values);
     }
 
     public void sync(@NonNull Writer writer, String comment) throws IOException {
@@ -89,6 +95,7 @@ public class MapSettings extends AbstractSettings implements Persistable {
             }
         }
         props.store(writer, comment);
+        setModified(false);
     }
 
     @Override

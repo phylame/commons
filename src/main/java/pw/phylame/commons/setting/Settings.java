@@ -1,5 +1,6 @@
 package pw.phylame.commons.setting;
 
+import lombok.NonNull;
 import lombok.val;
 import pw.phylame.commons.value.Pair;
 
@@ -10,17 +11,19 @@ import java.util.Map;
  * @date 2018/06/13
  */
 public interface Settings extends Iterable<Pair<String, Object>> {
+    boolean isModified();
+
     boolean isEnable(String key);
 
     Object set(String key, Object value);
 
-    default void update(Map<String, Object> map) {
+    default void update(@NonNull Map<String, Object> map) {
         for (val e : map.entrySet()) {
             set(e.getKey(), e.getValue());
         }
     }
 
-    default void update(Settings settings) {
+    default void update(@NonNull Settings settings) {
         for (val e : settings) {
             set(e.getKey(), e.getValue());
         }
@@ -29,7 +32,7 @@ public interface Settings extends Iterable<Pair<String, Object>> {
     Object get(String key);
 
     default boolean contains(String key) {
-        return get(key) != null;
+        return key != null && get(key) != null;
     }
 
     Object remove(String key);

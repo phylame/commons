@@ -8,6 +8,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 /**
@@ -199,5 +200,17 @@ public final class IOUtils {
 
     public static List<String> toLines(Reader reader) {
         return buffered(reader).lines().collect(Collectors.toList());
+    }
+
+    public static Properties toProperties(InputStream input) throws IOException {
+        val props = new Properties();
+        props.load(input);
+        return props;
+    }
+
+    public static Properties toProperties(Reader reader) throws IOException {
+        val props = new Properties();
+        props.load(reader);
+        return props;
     }
 }

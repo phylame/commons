@@ -42,7 +42,7 @@ public final class FormatterService {
         registry.put(type, formatter);
     }
 
-    public <T extends Enum<T>> void register(@NonNull Class<T> enumType) {
+    public <T extends Enum<T>> void registerEnum(@NonNull Class<T> enumType) {
         register(enumType, new DefaultFormatter<>(enumType));
     }
 
